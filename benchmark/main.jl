@@ -37,12 +37,14 @@ end
 function _parse_args(args)
     ret = Dict{String,String}()
     for arg in args
-        if (m = match(r"--([a-z]+)=(.+?)($|\s)", arg)) !== nothing
-            ret[m[1]] = m[2]
-        elseif (m = match(r"--([a-z]+?)($|\s)", arg)) !== nothing
-            ret[m[1]] = "true"
+        @assert startswith(arg, "--")
+        arg = arg[3:end]
+        if occursin("=", arg)
+            items = split(arg, "=")
+            @assert length(items) == 2
+            ret[items[1]] = items[2]
         else
-            error("unsupported argument $arg")
+            ret[arg] = "true"
         end
     end
     return ret

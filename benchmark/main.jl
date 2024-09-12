@@ -82,10 +82,10 @@ function benchmark(filename, parsed_args)
     return Dict(
         "version" => "v$X.$Y.$Z",
         "julia_total_time" => total_time,
-        "highs_run_time" => HiGHS.Highs_getRunTime(model),
-        "highs_objective_value" => HiGHS.Highs_getObjectiveValue(model),
+        "highs_run_time" => HiGHS.Highs_getRunTime(highs),
+        "highs_objective_value" => HiGHS.Highs_getObjectiveValue(highs),
         "run_status" => run_status,
-        "model_status" => HiGHS.Highs_getModelStatus(model),
+        "model_status" => HiGHS.Highs_getModelStatus(highs),
     )
 end
 

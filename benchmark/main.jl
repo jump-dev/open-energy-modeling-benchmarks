@@ -80,6 +80,8 @@ function benchmark(filename, parsed_args)
     Y = HiGHS.Highs_versionMinor()
     Z = HiGHS.Highs_versionPatch()
     return Dict(
+        "filename" => filename,
+        "options" => parsed_args,
         "version" => "v$X.$Y.$Z",
         "julia_total_time" => total_time,
         "highs_run_time" => HiGHS.Highs_getRunTime(highs),
@@ -102,7 +104,7 @@ function main(args)
     end
     for instance in instances
         ret = benchmark(instance, parsed_args)
-        open("output.jsonl") do io
+        open("output.jsonl", "a") do io
             return println(io, JSON.json(ret))
         end
     end

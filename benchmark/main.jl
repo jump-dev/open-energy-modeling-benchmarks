@@ -139,7 +139,11 @@ function benchmark(filename, parsed_args)
         "max_dual_infeasibility",
         "sum_dual_infeasibilities",
     ]
-        Highs_getInfoType(highs, info, pType)
+        @ccall libhighs.Highs_getInfoType(
+            highs::Ptr{Cvoid},
+            info::Ptr{Cchar},
+            pType::Ptr{Cint},
+        )::Cint
         if pType[] == Cint(1)  # kHighsInfoTypeInt
             pInt = Ref{Cint}()
             @ccall libhighs.Highs_getIntInfoValue(

@@ -3,8 +3,10 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
+import DataFrames
 import HiGHS
 import JSON
+import Statistics
 
 const INSTANCE_DIR = joinpath(dirname(@__DIR__), "instances")
 
@@ -15,18 +17,20 @@ function print_help()
     print(
         """
         usage: julia --project=benchmark benchmark/main.jl \
-            --instance=<name> | --all
+            --instance=<name> | --all | --analyze
             [--help]
-            [--output_file=<data_time.jsonl>]
+            [--output_filename=<output.jsonl>]
             [--option=<value>]
 
         ## Arguments
 
          * `--instance`:  the file in `instance` to run. Valid files are
             * $(join(filter(_is_mps, files), "\n    * "))
-         * `--all`    if passed, `--instance` must not be passed, and the
-                      argument will loop over all valid instances
-         * `--help`   print this help message
+         * `--all`        if passed, `--instance` must not be passed, and the
+                          argument will loop over all valid instances
+         * `--analyze`    if passed, run the analysis script
+         * `--help`       print this help message
+         * `--output_filename`  the file in which to store solution logs
          * `--option=<value>`   option value pairs that are passed directly to
                                 HiGHS
         """
@@ -79,7 +83,7 @@ function benchmark(filename, parsed_args)
     X = HiGHS.Highs_versionMajor()
     Y = HiGHS.Highs_versionMinor()
     Z = HiGHS.Highs_versionPatch()
-    return Dict(
+    result = Dict(
         "filename" => filename,
         "options" => parsed_args,
         "version" => "v$X.$Y.$Z",
@@ -89,12 +93,87 @@ function benchmark(filename, parsed_args)
         "run_status" => run_status,
         "model_status" => HiGHS.Highs_getModelStatus(highs),
     )
+    pBool = Ref{Cint}(0)
+    HiGHS.Highs_getIntInfoValue(highs, "valid", pBool)
+    if pBool[] == 0
+        return result
+    end
+    # INFO
+    pType = Ref{Cint}()
+    for info in [
+        "simplex_iteration_count",
+        "ipm_iteration_count",
+        "crossover_iteration_count",
+        "primal_solution_status",
+        "dual_solution_status",
+        "basis_validity",
+        "num_primal_infeasibilities",
+        "num_dual_infeasibilities",
+        "objective_function_value",
+        "mip_dual_bound",
+        "mip_gap",
+        "max_integrality_violation",
+        "max_primal_infeasibility",
+        "sum_primal_infeasibilities",
+        "max_dual_infeasibility",
+        "sum_dual_infeasibilities",
+    ]
+        Highs_getInfoType(highs, info, pType)
+        if pType[] == HiGHS.kHighsInfoTypeInt
+            pInt = Ref{Cint}()
+            HiGHS.Highs_getIntInfoValue(highs, info, pInt)
+            result[info] = pInt[]
+        elseif pType[] == HiGHS.kHighsInfoTypeDouble
+            pDouble = Ref{Cdouble}()
+            HiGHS.Highs_getDoubleInfoValue(highs, info, pDouble)
+            result[info] = pDouble[]
+        end
+    end
+    return result
+end
+
+sgm(x::Vector{BigFloat}; sh::BigFloat) = exp(sum(log(max(1, xi + sh)) for xi in x) / length(x)) - sh
+sgm(x; sh = 10.0) = round(Float64(sgm(BigFloat.(x); sh = big(sh))); digits = 2)
+
+function geometric_mean(df, key)
+    return DataFrames.combine(
+        DataFrames.groupby(
+            DataFrames.combine(
+                DataFrames.groupby(df, [:filename, :solver_version]),
+                key => Statistics.mean => key,
+            ),
+            [:solver_version]
+        ),
+        key => sgm => key,
+    )
+end
+
+function analyse_output(output_filename = "output.jsonl")
+    df = DataFrames.DataFrame(JSON.parse.(readlines(output_filename)))
+    df.solver = get.(df.options, "solver", "default")
+    df.solver_version = string.(df.version, "-", df.solver)
+    df.uuid = String.(first.(split.(last.(split.(df.filename, '/')), '-')))
+    result = geometric_mean(df, :julia_total_time)
+    @info "SGM(sh=10) for :julia_total_time"
+    display(result)
+    function get_wide(df, key)
+        df_long = df[:, [:uuid, :solver_version, key]]
+        return DataFrames.unstack(df_long, :uuid, :solver_version, key)
+    end
+    for key in (:run_status, :model_status, :highs_objective_value)
+        @info key
+        display(get_wide(df, key))
+    end
+    return
 end
 
 function main(args)
     parsed_args = _parse_args(args)
+    output_filename = get(parsed_args, "output_filename", "output.jsonl")
     if get(parsed_args, "help", "false") == "true"
         return print_help()
+    elseif get(parsed_args, "analyze", "false") == "true"
+        return analyse_output(output_filename)
     end
     instances = String[]
     if get(parsed_args, "all", "false") == "true"
@@ -104,12 +183,11 @@ function main(args)
     end
     for instance in instances
         ret = benchmark(instance, parsed_args)
-        open("output.jsonl", "a") do io
+        open(output_filename, "a") do io
             return println(io, JSON.json(ret))
         end
     end
     return
 end
 
-# julia --project=benchmark benchmark/main.jl --instance=09d8dfdaa3dff578cb9f3af8ecefe9dab893a0ada31310c6b4010972415e8b44-GenX_8_three_zones_w_colocated_VRE_storage_electrolyzers.mps.gz --solver=ipm
 main(ARGS)

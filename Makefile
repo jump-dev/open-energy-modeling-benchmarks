@@ -7,12 +7,20 @@ default: help
 
 help:
 	@echo "The following make commands are available:"
-	@echo "  genx   write all GenX instances"
-	@echo "  all    re-run all commands"
+	@echo "  genx   	write all GenX instances"
+	@echo "  benchmark  run a new set of benchmarks"
+	@echo "  analyze   	print analysis of output"
+	@echo "  all    	re-run all commands"
 
 genx:
 	julia --project=GenX GenX/main.jl --all --run --write
 
+benchmark:
+	julia --project=benchmark benchmark/main.jl --all
+
+analyze:
+	julia --project=benchmark benchmark/main.jl --analyze
+
 all: genx
 
-.PHONY: default help genx list
+.PHONY: default help genx benchmark analyze

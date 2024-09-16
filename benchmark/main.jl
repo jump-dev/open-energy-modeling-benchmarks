@@ -93,12 +93,6 @@ function benchmark(filename, parsed_args)
         "run_status" => run_status,
         "model_status" => @ccall libhighs.Highs_getModelStatus(highs::Ptr{Cvoid})::Cint,
     )
-    pBool = Ref{Cint}(0)
-    @ccall libhighs.Highs_getIntInfoValue(highs::Ptr{Cvoid}, "valid"::Ptr{Cchar}, pBool::Ptr{Cint})::Cint
-    if pBool[] == 0
-        @ccall libhighs.Highs_destroy(highs::Ptr{Cvoid})::Cvoid
-        return result
-    end
     # INFO
     pType = Ref{Cint}()
     for info in [

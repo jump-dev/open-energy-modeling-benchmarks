@@ -57,25 +57,48 @@ end
 function benchmark(filename, parsed_args)
     start_time = time()
     highs = @ccall libhighs.Highs_create()::Ptr{Cvoid}
-    ret = @ccall libhighs.Highs_readModel(highs::Ptr{Cvoid}, filename::Ptr{Cchar})::Cint
+    ret = @ccall libhighs.Highs_readModel(
+        highs::Ptr{Cvoid},
+        filename::Ptr{Cchar},
+    )::Cint
     @assert ret == 0
     typeP = Ref{Cint}()
     for (option, value) in parsed_args
         if option in ("instance", "all", "help")
             continue
         end
-        ret = @ccall libhighs.Highs_getOptionType(highs::Ptr{Cvoid}, option::Ptr{Cchar}, typeP::Ptr{Cint})::Cint
+        ret = @ccall libhighs.Highs_getOptionType(
+            highs::Ptr{Cvoid},
+            option::Ptr{Cchar},
+            typeP::Ptr{Cint},
+        )::Cint
         if !iszero(ret)
             # Not an option. Skip.
         elseif typeP[] == Cint(0)  # kHighsOptionTypeBool
-            @ccall libhighs.Highs_setBoolOptionValue(highs::Ptr{Cvoid}, option::Ptr{Cchar}, parse(Cint, value)::Cint)::Cint
+            @ccall libhighs.Highs_setBoolOptionValue(
+                highs::Ptr{Cvoid},
+                option::Ptr{Cchar},
+                parse(Cint, value)::Cint,
+            )::Cint
         elseif typeP[] == Cint(1)  # kHighsOptionTypeInt
-            @ccall libhighs.Highs_setIntOptionValue(highs::Ptr{Cvoid}, option::Ptr{Cchar}, parse(Cint, value)::Cint)::Cint
+            @ccall libhighs.Highs_setIntOptionValue(
+                highs::Ptr{Cvoid},
+                option::Ptr{Cchar},
+                parse(Cint, value)::Cint,
+            )::Cint
         elseif typeP[] == Cint(2)  # kHighsOptionTypeDouble
-            @ccall libhighs.Highs_setDoubleOptionValue(highs::Ptr{Cvoid}, option::Ptr{Cchar}, parse(Float64, value)::Cdouble)::Cint
+            @ccall libhighs.Highs_setDoubleOptionValue(
+                highs::Ptr{Cvoid},
+                option::Ptr{Cchar},
+                parse(Float64, value)::Cdouble,
+            )::Cint
         else
             @assert typeP[] == Cint(3)  # kHighsOptionTypeString
-            @ccall libhighs.Highs_setStringOptionValue(highs::Ptr{Cvoid}, option::Ptr{Cchar}, value::Ptr{Cchar})::Cint
+            @ccall libhighs.Highs_setStringOptionValue(
+                highs::Ptr{Cvoid},
+                option::Ptr{Cchar},
+                value::Ptr{Cchar},
+            )::Cint
         end
     end
     run_status = @ccall libhighs.Highs_run(highs::Ptr{Cvoid})::Cint
@@ -88,10 +111,13 @@ function benchmark(filename, parsed_args)
         "options" => parsed_args,
         "version" => "v$X.$Y.$Z",
         "julia_total_time" => total_time,
-        "highs_run_time" => @ccall libhighs.Highs_getRunTime(highs::Ptr{Cvoid})::Cdouble,
-        "highs_objective_value" => @ccall libhighs.Highs_getObjectiveValue(highs::Ptr{Cvoid})::Cdouble,
+        "highs_run_time" =>
+            @ccall(libhighs.Highs_getRunTime(highs::Ptr{Cvoid})::Cdouble),
+        "highs_objective_value" =>
+            @ccall(libhighs.Highs_getObjectiveValue(highs::Ptr{Cvoid})::Cdouble),
         "run_status" => run_status,
-        "model_status" => @ccall libhighs.Highs_getModelStatus(highs::Ptr{Cvoid})::Cint,
+        "model_status" =>
+            @ccall(libhighs.Highs_getModelStatus(highs::Ptr{Cvoid})::Cint),
     )
     # INFO
     pType = Ref{Cint}()
@@ -116,11 +142,19 @@ function benchmark(filename, parsed_args)
         Highs_getInfoType(highs, info, pType)
         if pType[] == Cint(1)  # kHighsInfoTypeInt
             pInt = Ref{Cint}()
-            @ccall libhighs.Highs_getIntInfoValue(highs::Ptr{Cvoid}, info::Ptr{Cchar}, pInt::Ptr{Cint})::Cint
+            @ccall libhighs.Highs_getIntInfoValue(
+                highs::Ptr{Cvoid},
+                info::Ptr{Cchar},
+                pInt::Ptr{Cint},
+            )::Cint
             result[info] = pInt[]
         elseif pType[] == Cint(2)  # kHighsInfoTypeDouble
             pDouble = Ref{Cdouble}()
-            @ccall libhighs.Highs_getDoubleInfoValue(highs::Ptr{Cvoid}, info::Ptr{Cchar}, pDouble::Ptr{Cdouble})::Cint
+            @ccall libhighs.Highs_getDoubleInfoValue(
+                highs::Ptr{Cvoid},
+                info::Ptr{Cchar},
+                pDouble::Ptr{Cdouble},
+            )::Cint
             result[info] = pDouble[]
         end
     end

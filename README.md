@@ -17,6 +17,7 @@ This repository is licensed under the [MIT license](https://github.com/jump-dev/
 
 This repository is organized as follows:
 
+ * `/benchmark`: scripts to run any required benchmarking experiments
  * `/instances`: a collection of MPS for benchmarking. Files in this directory
    are gzipped with the default `gzip <file.mps>`. Filenames are the SHA256 of
    the uncompressed MPS file (to mitigate against potential differences in

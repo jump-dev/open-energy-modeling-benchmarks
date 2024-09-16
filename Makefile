@@ -16,6 +16,11 @@ genx:
 	julia --project=GenX GenX/main.jl --all --run --write
 
 benchmark:
+	@if [ ${HIGHS} ]; then\
+		echo ${HIGHS};\
+		julia --project=benchmark -e 'import Pkg; Pkg.add(; name = "HiGHS_jll", version = ENV["HIGHS"])';\
+    fi
+	julia --project=benchmark -e "import Pkg; Pkg.instantiate()"
 	julia --project=benchmark benchmark/main.jl --all
 
 analyze:

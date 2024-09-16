@@ -4,7 +4,7 @@
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
 import DataFrames
-import HiGHS
+import HiGHS_jll: libhighs
 import JSON
 import Statistics
 
@@ -56,46 +56,47 @@ end
 
 function benchmark(filename, parsed_args)
     start_time = time()
-    highs = HiGHS.Highs_create()
-    ret = HiGHS.Highs_readModel(highs, filename)
+    highs = @ccall libhighs.Highs_create()::Ptr{Cvoid}
+    ret = @ccall libhighs.Highs_readModel(highs::Ptr{Cvoid}, filename::Ptr{Cchar})::Cint
     @assert ret == 0
     typeP = Ref{Cint}()
     for (option, value) in parsed_args
         if option in ("instance", "all", "help")
             continue
         end
-        ret = HiGHS.Highs_getOptionType(highs, option, typeP)
+        ret = @ccall libhighs.Highs_getOptionType(highs::Ptr{Cvoid}, option::Ptr{Cchar}, typeP::Ptr{Cint})::Cint
         if !iszero(ret)
             # Not an option. Skip.
-        elseif typeP[] == HiGHS.kHighsOptionTypeBool
-            HiGHS.Highs_setBoolOptionValue(highs, option, parse(Cint, value))
-        elseif typeP[] == HiGHS.kHighsOptionTypeInt
-            HiGHS.Highs_setIntOptionValue(highs, option, parse(Cint, value))
-        elseif typeP[] == HiGHS.kHighsOptionTypeDouble
-            HiGHS.Highs_setDoubleOptionValue(highs, option, parse(Float64, value))
+        elseif typeP[] == Cint(0)  # kHighsOptionTypeBool
+            @ccall libhighs.Highs_setBoolOptionValue(highs::Ptr{Cvoid}, option::Ptr{Cchar}, parse(Cint, value)::Cint)::Cint
+        elseif typeP[] == Cint(1)  # kHighsOptionTypeInt
+            @ccall libhighs.Highs_setIntOptionValue(highs::Ptr{Cvoid}, option::Ptr{Cchar}, parse(Cint, value)::Cint)::Cint
+        elseif typeP[] == Cint(2)  # kHighsOptionTypeDouble
+            @ccall libhighs.Highs_setDoubleOptionValue(highs::Ptr{Cvoid}, option::Ptr{Cchar}, parse(Float64, value)::Cdouble)::Cint
         else
-            @assert typeP[] == HiGHS.kHighsOptionTypeString
-            HiGHS.Highs_setStringOptionValue(highs, option, value)
+            @assert typeP[] == Cint(3)  # kHighsOptionTypeString
+            @ccall libhighs.Highs_setStringOptionValue(highs::Ptr{Cvoid}, option::Ptr{Cchar}, value::Ptr{Cchar})::Cint
         end
     end
-    run_status = HiGHS.Highs_run(highs)
+    run_status = @ccall libhighs.Highs_run(highs::Ptr{Cvoid})::Cint
     total_time = time() - start_time
-    X = HiGHS.Highs_versionMajor()
-    Y = HiGHS.Highs_versionMinor()
-    Z = HiGHS.Highs_versionPatch()
+    X = @ccall libhighs.Highs_versionMajor()::Cint
+    Y = @ccall libhighs.Highs_versionMinor()::Cint
+    Z = @ccall libhighs.Highs_versionPatch()::Cint
     result = Dict(
         "filename" => filename,
         "options" => parsed_args,
         "version" => "v$X.$Y.$Z",
         "julia_total_time" => total_time,
-        "highs_run_time" => HiGHS.Highs_getRunTime(highs),
-        "highs_objective_value" => HiGHS.Highs_getObjectiveValue(highs),
+        "highs_run_time" => @ccall libhighs.Highs_getRunTime(highs::Ptr{Cvoid})::Cdouble,
+        "highs_objective_value" => @ccall libhighs.Highs_getObjectiveValue(highs::Ptr{Cvoid})::Cdouble,
         "run_status" => run_status,
-        "model_status" => HiGHS.Highs_getModelStatus(highs),
+        "model_status" => @ccall libhighs.Highs_getModelStatus(highs::Ptr{Cvoid})::Cint,
     )
     pBool = Ref{Cint}(0)
-    HiGHS.Highs_getIntInfoValue(highs, "valid", pBool)
+    @ccall libhighs.Highs_getIntInfoValue(highs::Ptr{Cvoid}, "valid"::Ptr{Cchar}, pBool::Ptr{Cint})::Cint
     if pBool[] == 0
+        @ccall libhighs.Highs_destroy(highs::Ptr{Cvoid})::Cvoid
         return result
     end
     # INFO
@@ -119,16 +120,17 @@ function benchmark(filename, parsed_args)
         "sum_dual_infeasibilities",
     ]
         Highs_getInfoType(highs, info, pType)
-        if pType[] == HiGHS.kHighsInfoTypeInt
+        if pType[] == Cint(1)  # kHighsInfoTypeInt
             pInt = Ref{Cint}()
-            HiGHS.Highs_getIntInfoValue(highs, info, pInt)
+            @ccall libhighs.Highs_getIntInfoValue(highs::Ptr{Cvoid}, info::Ptr{Cchar}, pInt::Ptr{Cint})::Cint
             result[info] = pInt[]
-        elseif pType[] == HiGHS.kHighsInfoTypeDouble
+        elseif pType[] == Cint(2)  # kHighsInfoTypeDouble
             pDouble = Ref{Cdouble}()
-            HiGHS.Highs_getDoubleInfoValue(highs, info, pDouble)
+            @ccall libhighs.Highs_getDoubleInfoValue(highs::Ptr{Cvoid}, info::Ptr{Cchar}, pDouble::Ptr{Cdouble})::Cint
             result[info] = pDouble[]
         end
     end
+    @ccall libhighs.Highs_destroy(highs::Ptr{Cvoid})::Cvoid
     return result
 end
 

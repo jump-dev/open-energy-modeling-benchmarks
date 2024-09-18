@@ -4,7 +4,7 @@ The purpose of this repository is to collate a collection of benchmarks related
 to open energy modeling in JuMP. These benchmarks will be used to improve JuMP
 and HiGHS.
 
-This repository is part of our [Open-Energy-Modeling](https://github.com/jump-dev/jump-dev.github.io/pull/154)
+This repository is part of our [Open-Energy-Modeling](https://jump.dev/announcements/open-energy-modeling/2024/09/16/oem/)
 project.
 
 For suggestions and feedback, please open a GitHub issue.

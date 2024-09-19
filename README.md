@@ -19,10 +19,12 @@ This repository is organized as follows:
 
  * `/benchmark`: scripts to run any required benchmarking experiments
  * `/instances`: a collection of MPS for benchmarking. Files in this directory
-   are gzipped with the default `gzip <file.mps>`. Filenames are the SHA256 of
+   are gzipped with the default `gzip <file.mps>`. Filenames are composed by
+   two pieces `[PREFIX]-[SHA256]` where `[SHA256]` is the SHA256 of
    the uncompressed MPS file (to mitigate against potential differences in
-   `gzip` settings), followed by `-`, followed by a suffix that can be used to
-   trace the origin of that particular model. By default, models in this
+   `gzip` settings), and `[PREFIX]` is a name that can be used to
+   trace the origin of that particular model. If no prefix was defined it
+   falls back to `UNNAMED`. By default, models in this
    directory are not included by git. Add them with `git add -f instances/*`.
  * `/GenX`: case studies and scripts to run models built with GenX.
  * `Makefile`: a top-level makefile to automate rebuilding the instances, and

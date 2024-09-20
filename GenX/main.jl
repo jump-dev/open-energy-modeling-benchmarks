@@ -46,11 +46,11 @@ function _parse_args(args)
     return ret
 end
 
-const HIGHS_WRITE_FILE_SUFFIX = Ref{String}("")
+const HIGHS_WRITE_FILE_PREFIX = Ref{String}("UNNAMED")
 
 function _write_highs_model(highs)
-    suffix = HIGHS_WRITE_FILE_SUFFIX[]::String
-    if isempty(suffix)
+    prefix = HIGHS_WRITE_FILE_PREFIX[]::String
+    if isempty(prefix)
         return
     end
     instances = joinpath(dirname(@__DIR__), "instances")
@@ -62,7 +62,7 @@ function _write_highs_model(highs)
     run(`gzip $tmp_filename`)
     mv(
         "$(tmp_filename).gz",
-        joinpath(instances, "$hex-$suffix.mps.gz");
+        joinpath(instances, "$prefix-$hex.mps.gz");
         force = true,
     )
     return
@@ -89,7 +89,7 @@ function main(args)
     for case in cases
         @info("Running $case")
         if get(parsed_args, "run", "false") == "true"
-            HIGHS_WRITE_FILE_SUFFIX[] = "GenX_$(last(split(case, "/")))"
+            HIGHS_WRITE_FILE_PREFIX[] = "GenX_$(last(split(case, "/")))"
             GenX.run_genx_case!(case)
         end
     end

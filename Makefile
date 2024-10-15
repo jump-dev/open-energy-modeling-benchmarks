@@ -15,6 +15,9 @@ help:
 genx:
 	julia --project=GenX GenX/main.jl --all --run --write
 
+sienna:
+	julia --project=SIenna Sienna/tutorial_1.jl --all --run --write
+
 benchmark:
 	@if [ ${HIGHS} ]; then\
 		echo ${HIGHS};\

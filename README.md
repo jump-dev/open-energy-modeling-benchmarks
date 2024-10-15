@@ -27,6 +27,7 @@ This repository is organized as follows:
    falls back to `UNNAMED`. By default, models in this
    directory are not included by git. Add them with `git add -f instances/*`.
  * `/GenX`: case studies and scripts to run models built with GenX.
+ * `/Sienna`: case studies and scripts to run models built with Sienna.
  * `Makefile`: a top-level makefile to automate rebuilding the instances, and
    any other tasks that we end up needed to repeat regularly.
 
@@ -54,3 +55,20 @@ julia --project=GenX GenX/main.jl --case=1_three_zones --run [--write]
 ```
 
 See the `GenX/main.jl` driver script for more details.
+
+### Sienna
+
+For now, we can rebuild all of the Sienna examples with (from the root of this
+directory):
+
+```
+make sienna
+```
+
+To run a particular case, do:
+
+```
+julia --project=Sienna Sienna/tutorial_1.jl --case=PTDF-12 --run [--write]
+```
+
+See the `Sienna/tutorial_1.jl` driver script for more details.

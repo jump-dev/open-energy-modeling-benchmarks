@@ -89,7 +89,7 @@ function main(args)
     for case in cases
         @info("Running $case")
         if get(parsed_args, "run", "false") == "true"
-            HIGHS_WRITE_FILE_PREFIX[] = "GenX_$(last(split(case, "/")))"
+            HIGHS_WRITE_FILE_PREFIX[] = "GenX_$(last(splitpath(case)))"
             GenX.run_genx_case!(case)
         end
     end

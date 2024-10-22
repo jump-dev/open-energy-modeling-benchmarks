@@ -20,11 +20,9 @@ using Logging
 =#
 
 function print_help()
-    cases = readdir(joinpath(@__DIR__, "cases"); sort = false)
-    valid_cases = filter(c -> isdir(joinpath(@__DIR__, "cases", c)), cases)
     print(
         """
-        usage: julia --project=GenX GenX/main.jl \
+        usage: julia --project=Sienna Sienna/tutorial_1.jl \
             --case=<case> | --all \
             [--help]      \
             [--run]       \
@@ -33,9 +31,12 @@ function print_help()
         ## Arguments
 
          * `--case`:  the option of network and horizon to run. Valid cases are
-            * $(join(vec(["$(net)-$(hor)" for hor in horizon_options(), net in network_options()]), "\n    * "))
+            * $(join(vec(["$(net)-<hor>-<day>" for net in network_options()]), "\n    * "))
+            For <hor> in 1 to 48 (suggested horizons are $(join(horizon_options(), ", ")))
+            For <day> in 1 to 365 (suggested days are $(join(days_options(), ", ")))
          * `--all`    if passed, `--case` must not be passed, and the argument
-                      will loop over all valid cases
+                      will loop over all valid cases only for the above suggested
+                      days and horizons.
          * `--help`   print this help message
          * `--run`    if provided, execute the case
          * `--write`  if provided, write out files to
@@ -90,7 +91,11 @@ function HiGHS.Highs_run(highs)
     return ccall((:Highs_run, HiGHS.libhighs), Cint, (Ptr{Cvoid},), highs)
 end
 
-horizon_options() = [1, 6, 12, 24, 48]
+# selected from:
+# https://github.com/jump-dev/open-energy-modeling-benchmarks/pull/20#issuecomment-2426998081
+days_options() = sort([332, 29, 314])
+
+horizon_options() = [12, 24, 48]
 
 network_options() = [
     "CopperPlate",
@@ -140,20 +145,26 @@ function main(args)
         "Transport" => NFAPowerModel,
     )
 
+    parsed_args_all = get(parsed_args, "all", "false")
+
     for net_name in network_options()
         set_network_model!(template_uc, NetworkModel(net_models[net_name]))
-        for h in horizon_options()
+        for h in 1:48, day in 1:365
 
-            if get(parsed_args, "all", "false") == "true"
-                # proceed normally
-            elseif haskey(parsed_args, "case") && "$(net_name)-$(h)" != parsed_args["case"]
+            if parsed_args_all == "true"
+                if day in days_options() && h in horizon_options()
+                    # proceed normally
+                else
+                    continue # because there are way too many options
+                end
+            elseif haskey(parsed_args, "case") && "$(net_name)-$(h)-$(day)" != parsed_args["case"]
                 continue
             else
                 @info("No case selected")
                 return
             end
 
-            @info("Running $net_name with $h hours")
+            @info("Running $net_name with $h hours for day $day")
 
             if get(parsed_args, "run", "false") != "true"
                 continue
@@ -164,6 +175,7 @@ function main(args)
                 sys;
                 optimizer = solver,
                 horizon = Hour(h),
+                initial_time = DateTime("2020-01-01T00:00:00") + Hour((day - 1) * 24),
                 optimizer_solve_log_print = true,
             )
 
@@ -173,7 +185,7 @@ function main(args)
             build!(problem, output_dir = mktempdir(), console_level = Logging.Info)
 
             # the solve step optimizes the main model
-            HIGHS_WRITE_FILE_PREFIX[] = "Sienna_modified_RTS_GMLC_DA_sys_Net$(net_name)_h$h"
+            HIGHS_WRITE_FILE_PREFIX[] = "Sienna_modified_RTS_GMLC_DA_sys_Net$(net_name)_Horizon$(h)_Day$day"
             if !write_files
                 HIGHS_WRITE_FILE_PREFIX[] = ""
             end

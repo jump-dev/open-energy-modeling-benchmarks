@@ -9,3 +9,4 @@ MaxCapReq: 0  # Activate maximum technology carveout constraints; 0 = not active
 WriteShadowPrices: 1 # Write shadow prices of LP or relaxed MILP; 0 = not active; 1 = active
 DC_OPF: 1 #Flag for running DC-OPF: 0 = not active (transport model); 1 = active
 WriteOutputs: "annual"
+UCommit: 1 # Unit committment of thermal power plants; 0 = not active; 1 = active using integer clestering; 2 = active using linearized clustering

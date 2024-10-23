@@ -17,5 +17,6 @@ GenX is licensed under the [GPL v2 license](https://github.com/GenXProject/GenX.
 The example cases in this directory are taken from
 [https://github.com/GenXProject/GenX.jl/tree/v0.4.1/example_systems](https://github.com/GenXProject/GenX.jl/tree/v0.4.1/example_systems).
 
-Cases were modified by setting `UCommit: 1` to consider unit commitment of operation
-variables, which is the source of integrality in GenX.
+Cases were modified. Main change is setting `UCommit: 1` to consider unit commitment of operation
+variables, which is the source of integrality in GenX. Other modifications include changes in
+HiGHS parameters to generate the mps files quicker and disabling extra solves for writing prices.

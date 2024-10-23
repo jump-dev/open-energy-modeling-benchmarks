@@ -7,4 +7,4 @@ CO2Cap: 1
 MinCapReq: 1
 CapacityReserveMargin: 1
 EnergyShareRequirement: 0
-WriteShadowPrices: 1
+WriteShadowPrices: 0

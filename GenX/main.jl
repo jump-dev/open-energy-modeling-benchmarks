@@ -27,7 +27,7 @@ function print_help()
          * `--help`   print this help message
          * `--run`    if provided, execute the case with `GenX.run_genx_case!`
          * `--write`  if provided, write out files to
-        """
+        """,
     )
     return
 end

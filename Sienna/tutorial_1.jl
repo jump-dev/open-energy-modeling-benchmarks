@@ -40,7 +40,7 @@ function print_help()
          * `--help`   print this help message
          * `--run`    if provided, execute the case
          * `--write`  if provided, write out files to
-        """
+        """,
     )
     return
 end
@@ -97,12 +97,7 @@ days_options() = sort([332, 29, 314])
 
 horizon_options() = [12, 24, 48]
 
-network_options() = [
-    "CopperPlate",
-    "PTDF",
-    "DC",
-    "Transport",
-]
+network_options() = ["CopperPlate", "PTDF", "DC", "Transport"]
 
 #=
     Main Sienna loop to optimize a decision model
@@ -124,7 +119,11 @@ function main(args)
     set_device_model!(template_uc, Transformer2W, StaticBranch)
     set_device_model!(template_uc, TapTransformer, StaticBranch)
 
-    set_device_model!(template_uc, ThermalStandard, ThermalStandardUnitCommitment)
+    set_device_model!(
+        template_uc,
+        ThermalStandard,
+        ThermalStandardUnitCommitment,
+    )
     set_device_model!(template_uc, RenewableDispatch, RenewableFullDispatch)
     set_device_model!(template_uc, PowerLoad, StaticPowerLoad)
     set_device_model!(template_uc, HydroDispatch, HydroDispatchRunOfRiver)
@@ -150,14 +149,14 @@ function main(args)
     for net_name in network_options()
         set_network_model!(template_uc, NetworkModel(net_models[net_name]))
         for h in 1:48, day in 1:365
-
             if parsed_args_all == "true"
                 if day in days_options() && h in horizon_options()
                     # proceed normally
                 else
                     continue # because there are way too many options
                 end
-            elseif haskey(parsed_args, "case") && "$(net_name)-$(h)-$(day)" != parsed_args["case"]
+            elseif haskey(parsed_args, "case") &&
+                   "$(net_name)-$(h)-$(day)" != parsed_args["case"]
                 continue
             else
                 @info("No case selected")
@@ -175,21 +174,26 @@ function main(args)
                 sys;
                 optimizer = solver,
                 horizon = Hour(h),
-                initial_time = DateTime("2020-01-01T00:00:00") + Hour((day - 1) * 24),
+                initial_time = DateTime("2020-01-01T00:00:00") +
+                               Hour((day - 1) * 24),
                 optimizer_solve_log_print = true,
             )
 
             # this build step also optimizes a model for initial conditions
             # we skip this print step
             HIGHS_WRITE_FILE_PREFIX[] = ""
-            build!(problem, output_dir = mktempdir(), console_level = Logging.Info)
+            build!(
+                problem;
+                output_dir = mktempdir(),
+                console_level = Logging.Info,
+            )
 
             # the solve step optimizes the main model
             HIGHS_WRITE_FILE_PREFIX[] = "Sienna_modified_RTS_GMLC_DA_sys_Net$(net_name)_Horizon$(h)_Day$day"
             if !write_files
                 HIGHS_WRITE_FILE_PREFIX[] = ""
             end
-            solve!(problem, console_level = Logging.Info)
+            solve!(problem; console_level = Logging.Info)
         end
     end
     return

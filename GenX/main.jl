@@ -89,8 +89,14 @@ function main(args)
     for case in cases
         @info("Running $case")
         if get(parsed_args, "run", "false") == "true"
-            HIGHS_WRITE_FILE_PREFIX[] = "GenX_$(last(split(case, "/")))"
-            GenX.run_genx_case!(case)
+            HIGHS_WRITE_FILE_PREFIX[] = "GenX_$(last(splitpath(case)))"
+            try
+                GenX.run_genx_case!(case)
+            catch e
+                # this is necessary for case 6 given we set 500s o time limit
+                println("Error running $case")
+                @show e
+            end
         end
     end
     return

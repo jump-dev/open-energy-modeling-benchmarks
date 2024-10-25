@@ -33,7 +33,7 @@ function print_help()
          * `--output_filename`  the file in which to store solution logs
          * `--option=<value>`   option value pairs that are passed directly to
                                 HiGHS
-        """
+        """,
     )
     return
 end
@@ -113,8 +113,9 @@ function benchmark(filename, parsed_args)
         "julia_total_time" => total_time,
         "highs_run_time" =>
             @ccall(libhighs.Highs_getRunTime(highs::Ptr{Cvoid})::Cdouble),
-        "highs_objective_value" =>
-            @ccall(libhighs.Highs_getObjectiveValue(highs::Ptr{Cvoid})::Cdouble),
+        "highs_objective_value" => @ccall(
+            libhighs.Highs_getObjectiveValue(highs::Ptr{Cvoid})::Cdouble
+        ),
         "run_status" => run_status,
         "model_status" =>
             @ccall(libhighs.Highs_getModelStatus(highs::Ptr{Cvoid})::Cint),
@@ -166,7 +167,9 @@ function benchmark(filename, parsed_args)
     return result
 end
 
-sgm(x::Vector{BigFloat}; sh::BigFloat) = exp(sum(log(max(1, xi + sh)) for xi in x) / length(x)) - sh
+function sgm(x::Vector{BigFloat}; sh::BigFloat)
+    return exp(sum(log(max(1, xi + sh)) for xi in x) / length(x)) - sh
+end
 sgm(x; sh = 10.0) = round(Float64(sgm(BigFloat.(x); sh = big(sh))); digits = 2)
 
 function geometric_mean(df, key)
@@ -176,7 +179,7 @@ function geometric_mean(df, key)
                 DataFrames.groupby(df, [:filename, :solver_version]),
                 key => Statistics.mean => key,
             ),
-            [:solver_version]
+            [:solver_version],
         ),
         key => sgm => key,
     )

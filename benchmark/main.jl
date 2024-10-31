@@ -64,7 +64,7 @@ function benchmark(filename, parsed_args)
     @assert ret == 0
     typeP = Ref{Cint}()
     for (option, value) in parsed_args
-        if option in ("instance", "all", "help")
+        if option in ("instance", "all", "help", "output_filename")
             continue
         end
         ret = @ccall libhighs.Highs_getOptionType(

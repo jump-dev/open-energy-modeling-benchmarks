@@ -96,26 +96,32 @@ function main(args)
         "time_limit" => 500.0,
     )
     for case in cases
-        @info("Running $case")
-        connection = DBInterface.connect(DuckDB.DB)
-        TIO.read_csv_folder(
-            connection,
-            case;
-            schemas = TEM.schema_per_table_name,
-        )
-        energy_problem = TEM.EnergyProblem(connection)
-        TEM.create_model!(energy_problem; write_lp_file = false) # write_lp_file = true prints the LP file (model.lp) to the current directory
-        # To get access to the JuMP model, use `energy_problem.model`
-        if get(parsed_args, "run", "false") == "true"
-            HIGHS_WRITE_FILE_PREFIX[] = "TulipaEnergyModel_$(last(splitpath(case)))"
-            if !write_files
-                HIGHS_WRITE_FILE_PREFIX[] = ""
-            end
-            try
-                TEM.solve_model!(energy_problem, optimizer; parameters)
-            catch e
-                println("Error running $case")
-                @show e
+        for timestep in [24, 168, 672, 2016, 4032, 8760]
+            @info("Running $case for $timestep timesteps")
+            connection = DBInterface.connect(DuckDB.DB)
+            TIO.read_csv_folder(
+                connection,
+                case;
+                schemas = TEM.schema_per_table_name,
+            )
+            DuckDB.query(
+                connection,
+                "UPDATE rep_periods_data SET num_timesteps = $timestep WHERE year = 2030 AND rep_period = 1",
+            )
+            energy_problem = TEM.EnergyProblem(connection)
+            TEM.create_model!(energy_problem)
+            # To get access to the JuMP model, use `energy_problem.model`
+            if get(parsed_args, "run", "false") == "true"
+                HIGHS_WRITE_FILE_PREFIX[] = "TulipaEnergyModel_$(last(splitpath(case)))_$(timestep)h"
+                if !write_files
+                    HIGHS_WRITE_FILE_PREFIX[] = ""
+                end
+                try
+                    TEM.solve_model!(energy_problem, optimizer; parameters)
+                catch e
+                    println("Error running $case")
+                    @show e
+                end
             end
         end
     end

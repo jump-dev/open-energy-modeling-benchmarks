@@ -28,6 +28,8 @@ This repository is organized as follows:
    directory are not included by git. Add them with `git add -f instances/*`.
  * `/GenX`: case studies and scripts to run models built with GenX.
  * `/Sienna`: case studies and scripts to run models built with Sienna.
+ * `/TulipaEnergyModel`: case studies and scripts to run models built with
+ TulipaEnergyModel.
  * `Makefile`: a top-level makefile to automate rebuilding the instances, and
    any other tasks that we end up needed to repeat regularly.
 
@@ -72,3 +74,20 @@ julia --project=Sienna Sienna/tutorial_1.jl --case=PTDF-12 --run [--write]
 ```
 
 See the `Sienna/tutorial_1.jl` driver script for more details.
+
+### TulipaEnergyModel
+
+For now, we can rebuild all of the TulipaEnergyModel examples with (from the
+root of this directory):
+
+```
+make tulipaenergymodel
+```
+
+To run a particular case, do:
+
+```
+julia --project=TulipaEnergyModel TulipaEnergyModel/main.jl --case=1_EU_investment_simple --run [--write]
+```
+
+See the `TulipaEnergyModel/main.jl` driver script for more details.

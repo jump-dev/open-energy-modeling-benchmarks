@@ -8,6 +8,7 @@ default: help
 help:
 	@echo "The following make commands are available:"
 	@echo "  genx     write all GenX instances"
+	@echo "  tulipaenergymodel  write all TulipaEnergyModel instances"
 	@echo "  [HIGHS=X.Y.Z] benchmark  run a new set of benchmarks, optionally with a version of HiGHS"
 	@echo "  analyze  print analysis of output"
 	@echo "  all      re-run all commands"
@@ -17,6 +18,9 @@ genx:
 
 sienna:
 	julia --project=SIenna Sienna/tutorial_1.jl --all --run --write
+
+tulipaenergymodel:
+	julia --project=TulipaEnergyModel TulipaEnergyModel/main.jl --all --run --write
 
 benchmark:
 	@if [ ${HIGHS} ]; then\

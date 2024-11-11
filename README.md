@@ -27,6 +27,8 @@ This repository is organized as follows:
    falls back to `UNNAMED`. By default, models in this
    directory are not included by git. Add them with `git add -f instances/*`.
  * `/GenX`: case studies and scripts to run models built with GenX.
+ * `/PowerModels`: case studies and scripts to run models built with
+ PowerModels.
  * `/Sienna`: case studies and scripts to run models built with Sienna.
  * `Makefile`: a top-level makefile to automate rebuilding the instances, and
    any other tasks that we end up needed to repeat regularly.

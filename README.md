@@ -56,6 +56,23 @@ julia --project=GenX GenX/main.jl --case=1_three_zones --run [--write]
 
 See the `GenX/main.jl` driver script for more details.
 
+### PowerModels
+
+For now, we can rebuild all of the PowerModels examples with (from the root of
+this directory):
+
+```
+make powermodels
+```
+
+To run a particular case, do:
+
+```
+julia --project=PowerModels PowerModels/main.jl --case=pglib_opf_case1951_rte.m --run [--write]
+```
+
+See the `PowerModels/main.jl` driver script for more details.
+
 ### Sienna
 
 For now, we can rebuild all of the Sienna examples with (from the root of this

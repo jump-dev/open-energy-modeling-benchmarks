@@ -27,6 +27,8 @@ This repository is organized as follows:
    falls back to `UNNAMED`. By default, models in this
    directory are not included by git. Add them with `git add -f instances/*`.
  * `/GenX`: case studies and scripts to run models built with GenX.
+ * `/PowerModels`: case studies and scripts to run models built with
+ PowerModels.
  * `/Sienna`: case studies and scripts to run models built with Sienna.
  * `/TulipaEnergyModel`: case studies and scripts to run models built with
  TulipaEnergyModel.
@@ -57,6 +59,23 @@ julia --project=GenX GenX/main.jl --case=1_three_zones --run [--write]
 ```
 
 See the `GenX/main.jl` driver script for more details.
+
+### PowerModels
+
+For now, we can rebuild all of the PowerModels examples with (from the root of
+this directory):
+
+```
+make powermodels
+```
+
+To run a particular case, do:
+
+```
+julia --project=PowerModels PowerModels/main.jl --case=pglib_opf_case1951_rte.m --run [--write]
+```
+
+See the `PowerModels/main.jl` driver script for more details.
 
 ### Sienna
 

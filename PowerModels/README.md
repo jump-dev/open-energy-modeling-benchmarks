@@ -1,4 +1,4 @@
-# Sienna
+# PowerModels
 
 PowerModels.jl is a Julia/JuMP package for Steady-State Power Network
 Optimization. It is designed to enable computational evaluation of emerging

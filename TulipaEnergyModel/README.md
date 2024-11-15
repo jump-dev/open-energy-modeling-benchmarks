@@ -18,4 +18,6 @@ TulipaEnergyModel is licensed under the [Apache License 2.0](https://github.com/
 
 ## Structure
 
-The example at `main.jl` was inspired in code extracted from ...
+The example cases in this directory are taken from [https://github.com/TulipaEnergy/TulipaEnergyModel.jl/tree/main/benchmark/EU](https://github.com/TulipaEnergy/TulipaEnergyModel.jl/tree/main/benchmark/EU) 
+
+The EU case is a stylized European-level investment and operation modified to consider integer investments and unit commitment variables. In addition, the code at `main.jl` modifies the timesteps to consider different problem sizes ranging from a day to a year.

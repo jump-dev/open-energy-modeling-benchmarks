@@ -139,6 +139,7 @@ function benchmark(filename, parsed_args)
         "sum_primal_infeasibilities",
         "max_dual_infeasibility",
         "sum_dual_infeasibilities",
+        "primal_dual_integral",
     ]
         @ccall libhighs.Highs_getInfoType(
             highs::Ptr{Cvoid},

@@ -3,17 +3,32 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
+cd(@__DIR__)
+using Pkg
+Pkg.activate(".")
+ARGS = ["--case=CopperPlate-12-29", "--run", "--profile"]
+
 # necessary sienna stack
 using PowerSystems
 using PowerSimulations
 using HydroPowerSimulations
 using PowerSystemCaseBuilder
 # solver
+using JuMP
 using HiGHS
 # julia base
 using Dates
 using SHA
 using Logging
+# profile
+using Profile
+using FlameGraphs
+
+# helper functions
+include("../utils/utils.jl")
+include("../utils/profile.jl")
+# !!! TYPE PIRACY TO INTERCEPT ALL HIGHS SOLVES AND WRITE THEM TO FILES !!!
+include("../utils/highs_write.jl")
 
 #=
     Command line argument parsing
@@ -40,55 +55,10 @@ function print_help()
          * `--help`   print this help message
          * `--run`    if provided, execute the case
          * `--write`  if provided, write out files to
+         * `--profile`  profile the code
         """,
     )
     return
-end
-
-function _parse_args(args)
-    ret = Dict{String,String}()
-    for arg in args
-        if (m = match(r"--([a-z]+)=(.+?)($|\s)", arg)) !== nothing
-            ret[m[1]] = m[2]
-        elseif (m = match(r"--([a-z]+?)($|\s)", arg)) !== nothing
-            ret[m[1]] = "true"
-        else
-            error("unsupported argument $arg")
-        end
-    end
-    return ret
-end
-
-#=
-    HiGHS overloads to print models to files
-=#
-
-const HIGHS_WRITE_FILE_PREFIX = Ref{String}("")
-
-function _write_highs_model(highs)
-    prefix = HIGHS_WRITE_FILE_PREFIX[]::String
-    if isempty(prefix)
-        return
-    end
-    instances = joinpath(dirname(@__DIR__), "instances")
-    tmp_filename = joinpath(instances, "tmp.mps")
-    HiGHS.Highs_writeModel(highs, tmp_filename)
-    # We SHA the raw file so that potential gzip differences across
-    # platforms don't matter.
-    hex = bytes2hex(open(SHA.sha256, tmp_filename))
-    run(`gzip $tmp_filename`)
-    mv(
-        "$(tmp_filename).gz",
-        joinpath(instances, "$prefix-$hex.mps.gz");
-        force = true,
-    )
-    return
-end
-
-# !!! TYPE PIRACY TO INTERCEPT ALL HIGHS SOLVES AND WRITE THEM TO FILES !!!
-function HiGHS.Highs_run(highs)
-    _write_highs_model(highs)
-    return ccall((:Highs_run, HiGHS.libhighs), Cint, (Ptr{Cvoid},), highs)
 end
 
 # selected from:
@@ -98,6 +68,17 @@ days_options() = sort([332, 29, 314])
 horizon_options() = [12, 24, 48]
 
 network_options() = ["CopperPlate", "PTDF", "DC", "Transport"]
+
+function build_and_solve(problem)
+    file_name = HIGHS_WRITE_FILE_PREFIX[]
+    # skip the first file print
+    HIGHS_WRITE_FILE_PREFIX[] = ""
+    build!(problem; output_dir = mktempdir(), console_level = Logging.Info)
+    # write the file
+    HIGHS_WRITE_FILE_PREFIX[] = file_name
+    solve!(problem; console_level = Logging.Info)
+    return
+end
 
 #=
     Main Sienna loop to optimize a decision model
@@ -146,6 +127,17 @@ function main(args)
 
     parsed_args_all = get(parsed_args, "all", "false")
 
+    list = [
+        :build_and_solve,
+        JuMP,
+        HiGHS,
+        :Highs_run,
+    ]
+
+    if get(parsed_args, "profile", "false") == "true"
+        profile_file_io = create_profile_file(list, named = "Sienna Run")
+    end
+
     for net_name in network_options()
         set_network_model!(template_uc, NetworkModel(net_models[net_name]))
         for h in 1:48, day in 1:365
@@ -158,15 +150,17 @@ function main(args)
             elseif haskey(parsed_args, "case") &&
                    "$(net_name)-$(h)-$(day)" != parsed_args["case"]
                 continue
-            else
-                @info("No case selected")
-                return
             end
 
             @info("Running $net_name with $h hours for day $day")
 
             if get(parsed_args, "run", "false") != "true"
                 continue
+            end
+
+            HIGHS_WRITE_FILE_PREFIX[] = ""
+            if write_files
+                HIGHS_WRITE_FILE_PREFIX[] = "Sienna_modified_RTS_GMLC_DA_sys_Net$(net_name)_Horizon$(h)_Day$day"
             end
 
             problem = DecisionModel(
@@ -179,22 +173,18 @@ function main(args)
                 optimizer_solve_log_print = true,
             )
 
-            # this build step also optimizes a model for initial conditions
-            # we skip this print step
-            HIGHS_WRITE_FILE_PREFIX[] = ""
-            build!(
-                problem;
-                output_dir = mktempdir(),
-                console_level = Logging.Info,
-            )
-
-            # the solve step optimizes the main model
-            HIGHS_WRITE_FILE_PREFIX[] = "Sienna_modified_RTS_GMLC_DA_sys_Net$(net_name)_Horizon$(h)_Day$day"
-            if !write_files
-                HIGHS_WRITE_FILE_PREFIX[] = ""
+            if get(parsed_args, "profile", "false") == "true"
+                Profile.clear()
+                @profile build_and_solve(problem)
+                write_profile_data(profile_file_io, get_profile_data(list), named = "$(net_name)-$(h)-$(day)")
+            else
+                build_and_solve(problem)
             end
-            solve!(problem; console_level = Logging.Info)
         end
+    end
+
+    if get(parsed_args, "profile", "false") == "true"
+        close_profile_file(profile_file_io)
     end
     return
 end

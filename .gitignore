@@ -1,3 +1,4 @@
 GenX/cases/*/results*
 GenX/**/TDR_results*
 instances/*.mps.gz
+*/prof.csv

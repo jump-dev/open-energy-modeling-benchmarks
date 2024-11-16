@@ -3,9 +3,27 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
+cd(@__DIR__)
+using Pkg
+Pkg.activate(".")
+ARGS = ["--case=1_three_zones", "--run", "--profile"]
+
 import GenX
 import HiGHS
+# solver
+using JuMP
+using HiGHS
+# julia base
 import SHA
+# profile
+using Profile
+using FlameGraphs
+
+# helper functions
+include("../utils/utils.jl")
+include("../utils/profile.jl")
+# !!! TYPE PIRACY TO INTERCEPT ALL HIGHS SOLVES AND WRITE THEM TO FILES !!!
+include("../utils/highs_write.jl")
 
 function print_help()
     cases = readdir(joinpath(@__DIR__, "cases"); sort = false)
@@ -32,48 +50,6 @@ function print_help()
     return
 end
 
-function _parse_args(args)
-    ret = Dict{String,String}()
-    for arg in args
-        if (m = match(r"--([a-z]+)=(.+?)($|\s)", arg)) !== nothing
-            ret[m[1]] = m[2]
-        elseif (m = match(r"--([a-z]+?)($|\s)", arg)) !== nothing
-            ret[m[1]] = "true"
-        else
-            error("unsupported argument $arg")
-        end
-    end
-    return ret
-end
-
-const HIGHS_WRITE_FILE_PREFIX = Ref{String}("UNNAMED")
-
-function _write_highs_model(highs)
-    prefix = HIGHS_WRITE_FILE_PREFIX[]::String
-    if isempty(prefix)
-        return
-    end
-    instances = joinpath(dirname(@__DIR__), "instances")
-    tmp_filename = joinpath(instances, "tmp.mps")
-    HiGHS.Highs_writeModel(highs, tmp_filename)
-    # We SHA the raw file so that potential gzip differences across
-    # platforms don't matter.
-    hex = bytes2hex(open(SHA.sha256, tmp_filename))
-    run(`gzip $tmp_filename`)
-    mv(
-        "$(tmp_filename).gz",
-        joinpath(instances, "$prefix-$hex.mps.gz");
-        force = true,
-    )
-    return
-end
-
-# !!! TYPE PIRACY TO INTERCEPT ALL HIGHS SOLVES AND WRITE THEM TO FILES !!!
-function HiGHS.Highs_run(highs)
-    _write_highs_model(highs)
-    return ccall((:Highs_run, HiGHS.libhighs), Cint, (Ptr{Cvoid},), highs)
-end
-
 function main(args)
     parsed_args = _parse_args(args)
     if get(parsed_args, "help", "false") == "true"
@@ -86,18 +62,39 @@ function main(args)
     else
         push!(cases, joinpath(@__DIR__, "cases", parsed_args["case"]))
     end
+    list = [
+        :run_genx_case!,
+        JuMP,
+        HiGHS,
+        :Highs_run,
+    ]
+    if get(parsed_args, "profile", "false") == "true"
+        profile_file_io = create_profile_file(list, named = "Sienna Run")
+    end
     for case in cases
         @info("Running $case")
         if get(parsed_args, "run", "false") == "true"
-            HIGHS_WRITE_FILE_PREFIX[] = "GenX_$(last(splitpath(case)))"
+            HIGHS_WRITE_FILE_PREFIX[] = ""
+            if write_files
+                HIGHS_WRITE_FILE_PREFIX[] = "GenX_$(last(splitpath(case)))"
+            end
             try
-                GenX.run_genx_case!(case)
+                if get(parsed_args, "profile", "false") == "true"
+                    Profile.clear()
+                    @profile GenX.run_genx_case!(case)
+                    write_profile_data(profile_file_io, get_profile_data(list), named = "$(last(splitpath(case)))")
+                else
+                    GenX.run_genx_case!(case)
+                end
             catch e
                 # this is necessary for case 6 given we set 500s o time limit
                 println("Error running $case")
                 @show e
             end
         end
+    end
+    if get(parsed_args, "profile", "false") == "true"
+        close_profile_file(profile_file_io)
     end
     return
 end

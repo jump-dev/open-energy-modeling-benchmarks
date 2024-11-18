@@ -59,11 +59,8 @@ timestep_options() = [24, 168, 672, 2016, 4032, 8760]
 
 function build_and_solve(connection)
     optimizer = HiGHS.Optimizer
-    parameters = Dict(
-        "output_flag" => true,
-        "mip_rel_gap" => 50.0,
-        "time_limit" => 1.0,
-    )
+    parameters =
+        Dict("output_flag" => true, "mip_rel_gap" => 50.0, "time_limit" => 1.0)
     energy_problem = TEM.EnergyProblem(connection)
     TEM.create_model!(energy_problem)
     TEM.solve_model!(energy_problem, optimizer; parameters)
@@ -76,7 +73,7 @@ function main(args)
         return print_help()
     end
     write_files = get(parsed_args, "write", "false") == "true"
-    cases = Tuple{String, Int}[]
+    cases = Tuple{String,Int}[]
     if get(parsed_args, "all", "false") == "true"
         case_names = readdir(joinpath(@__DIR__, "cases"); join = true)
         timesteps = timestep_options()
@@ -90,15 +87,10 @@ function main(args)
         push!(cases, (joinpath(@__DIR__, "cases", case), parse(Int, timestep)))
     end
 
-    list = [
-        :build_and_solve,
-        JuMP,
-        HiGHS,
-        :Highs_run,
-    ]
+    list = [:build_and_solve, JuMP, HiGHS, :Highs_run]
 
     if get(parsed_args, "profile", "false") == "true"
-        profile_file_io = create_profile_file(list, named = "Tulipa Run")
+        profile_file_io = create_profile_file(list; named = "Tulipa Run")
     end
 
     for (case, timestep) in cases
@@ -125,7 +117,11 @@ function main(args)
                     build_and_solve(connection)
                     Profile.clear()
                     @profile build_and_solve(connection)
-                    write_profile_data(profile_file_io, get_profile_data(list), named = "$(last(splitpath(case)))_$(timestep)h")
+                    write_profile_data(
+                        profile_file_io,
+                        get_profile_data(list);
+                        named = "$(last(splitpath(case)))_$(timestep)h",
+                    )
                 else
                     build_and_solve(connection)
                 end

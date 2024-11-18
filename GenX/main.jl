@@ -62,14 +62,9 @@ function main(args)
     else
         push!(cases, joinpath(@__DIR__, "cases", parsed_args["case"]))
     end
-    list = [
-        :run_genx_case!,
-        JuMP,
-        HiGHS,
-        :Highs_run,
-    ]
+    list = [:run_genx_case!, JuMP, HiGHS, :Highs_run]
     if get(parsed_args, "profile", "false") == "true"
-        profile_file_io = create_profile_file(list, named = "Sienna Run")
+        profile_file_io = create_profile_file(list; named = "Sienna Run")
     end
     for case in cases
         @info("Running $case")
@@ -84,7 +79,11 @@ function main(args)
                     GenX.run_genx_case!(case)
                     Profile.clear()
                     @profile GenX.run_genx_case!(case)
-                    write_profile_data(profile_file_io, get_profile_data(list), named = "$(last(splitpath(case)))")
+                    write_profile_data(
+                        profile_file_io,
+                        get_profile_data(list);
+                        named = "$(last(splitpath(case)))",
+                    )
                 else
                     GenX.run_genx_case!(case)
                 end

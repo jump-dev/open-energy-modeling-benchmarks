@@ -61,14 +61,9 @@ function main(args)
     else
         push!(cases, joinpath(@__DIR__, "cases", parsed_args["case"]))
     end
-    list = [
-        :solve_ots,
-        JuMP,
-        HiGHS,
-        :Highs_run,
-    ]
+    list = [:solve_ots, JuMP, HiGHS, :Highs_run]
     if get(parsed_args, "profile", "false") == "true"
-        profile_file_io = create_profile_file(list, named = "PowerModels Run")
+        profile_file_io = create_profile_file(list; named = "PowerModels Run")
     end
     for case in cases
         @info("Running $case")
@@ -76,36 +71,26 @@ function main(args)
         if !write_files
             HIGHS_WRITE_FILE_PREFIX[] = ""
         end
-        solver = JuMP.optimizer_with_attributes(
-            HiGHS.Optimizer,
-            "time_limit" => 0.0,
-        )
+        solver =
+            JuMP.optimizer_with_attributes(HiGHS.Optimizer, "time_limit" => 0.0)
         if get(parsed_args, "run", "false") == "true"
-            PowerModels.solve_ots(
-                case,
-                PowerModels.DCPPowerModel,
-                solver,
-            )
+            PowerModels.solve_ots(case, PowerModels.DCPPowerModel, solver)
             if get(parsed_args, "profile", "false") == "true"
                 # precompile run
-                PowerModels.solve_ots(
-                    case,
-                    PowerModels.DCPPowerModel,
-                    solver,
-                )
+                PowerModels.solve_ots(case, PowerModels.DCPPowerModel, solver)
                 Profile.clear()
                 @profile PowerModels.solve_ots(
                     case,
                     PowerModels.DCPPowerModel,
                     solver,
                 )
-                write_profile_data(profile_file_io, get_profile_data(list), named = "$(last(splitpath(case)))")
+                write_profile_data(
+                    profile_file_io,
+                    get_profile_data(list);
+                    named = "$(last(splitpath(case)))",
+                )
             else
-                PowerModels.solve_ots(
-                case,
-                PowerModels.DCPPowerModel,
-                solver,
-            )
+                PowerModels.solve_ots(case, PowerModels.DCPPowerModel, solver)
             end
         end
     end

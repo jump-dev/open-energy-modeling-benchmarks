@@ -40,7 +40,6 @@ function dowork(node, mod::Module, cont)
 end
 
 function get_profile_data(list)
-
     @info("Processing profile data")
 
     profiler_data = Profile.fetch()
@@ -116,4 +115,3 @@ function close_profile_file(file)
     close(file[1])
     return
 end
-

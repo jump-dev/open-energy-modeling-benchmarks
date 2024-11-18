@@ -131,15 +131,10 @@ function main(args)
 
     parsed_args_all = get(parsed_args, "all", "false")
 
-    list = [
-        :build_and_solve,
-        JuMP,
-        HiGHS,
-        :Highs_run,
-    ]
+    list = [:build_and_solve, JuMP, HiGHS, :Highs_run]
 
     if get(parsed_args, "profile", "false") == "true"
-        profile_file_io = create_profile_file(list, named = "Sienna Run")
+        profile_file_io = create_profile_file(list; named = "Sienna Run")
     end
 
     for net_name in network_options()
@@ -182,7 +177,11 @@ function main(args)
                 build_and_solve(problem)
                 Profile.clear()
                 @profile build_and_solve(problem)
-                write_profile_data(profile_file_io, get_profile_data(list), named = "$(net_name)-$(h)-$(day)")
+                write_profile_data(
+                    profile_file_io,
+                    get_profile_data(list);
+                    named = "$(net_name)-$(h)-$(day)",
+                )
             else
                 build_and_solve(problem)
             end

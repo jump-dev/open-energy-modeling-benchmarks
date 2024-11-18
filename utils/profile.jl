@@ -88,6 +88,7 @@ function create_profile_file(list; basepath = "", header = true, named = "")
         if named != ""
             header_str *= "$named,"
         end
+        header_str *= "time (s),"
         for item in list[2:end]
             header_str *= String(Symbol(item)) * " (%),"
         end
@@ -97,13 +98,14 @@ function create_profile_file(list; basepath = "", header = true, named = "")
     return (f, Symbol.(list[2:end]))
 end
 
-function write_profile_data(file, result; named = "")
+function write_profile_data(file, result, time; named = "")
     f, list = file
 
     str = ""
     if named != ""
         str *= named * ","
     end
+    str *= @sprintf("%1.2f", time) * ","
     for item in list
         str *= @sprintf("%1.2f", result[item]) * ","
     end

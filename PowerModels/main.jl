@@ -65,7 +65,7 @@ function main(args)
     end
     list = [:solve_ots, JuMP, HiGHS, :Highs_run]
     if get(parsed_args, "profile", "false") == "true"
-        profile_file_io = create_profile_file(list; named = "PowerModels Run")
+        profile_file_io = create_profile_file(list; named = "PowerModels")
     end
     for case in cases
         @info("Running $case")
@@ -81,14 +81,15 @@ function main(args)
                 # precompile run
                 PowerModels.solve_ots(case, PowerModels.DCPPowerModel, solver)
                 Profile.clear()
-                @profile PowerModels.solve_ots(
+                time = @elapsed @profile PowerModels.solve_ots(
                     case,
                     PowerModels.DCPPowerModel,
                     solver,
                 )
                 write_profile_data(
                     profile_file_io,
-                    get_profile_data(list);
+                    get_profile_data(list),
+                    time;
                     named = "$(last(splitpath(case)))",
                 )
             else

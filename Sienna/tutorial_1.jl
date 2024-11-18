@@ -178,10 +178,11 @@ function main(args)
                 # precompile run
                 build_and_solve(problem)
                 Profile.clear()
-                @profile build_and_solve(problem)
+                time = @elapsed @profile build_and_solve(problem)
                 write_profile_data(
                     profile_file_io,
-                    get_profile_data(list);
+                    get_profile_data(list),
+                    time;
                     named = "$(net_name)-$(h)-$(day)",
                 )
             else

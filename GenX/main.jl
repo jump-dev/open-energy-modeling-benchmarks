@@ -80,10 +80,11 @@ function main(args)
                     # precompile run
                     GenX.run_genx_case!(case)
                     Profile.clear()
-                    @profile GenX.run_genx_case!(case)
+                    time = @elapsed @profile GenX.run_genx_case!(case)
                     write_profile_data(
                         profile_file_io,
-                        get_profile_data(list);
+                        get_profile_data(list),
+                        time;
                         named = "$(last(splitpath(case)))",
                     )
                 else

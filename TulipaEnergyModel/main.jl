@@ -118,10 +118,11 @@ function main(args)
                     # precompile run
                     build_and_solve(connection)
                     Profile.clear()
-                    @profile build_and_solve(connection)
+                    time = @elapsed @profile build_and_solve(connection)
                     write_profile_data(
                         profile_file_io,
-                        get_profile_data(list);
+                        get_profile_data(list),
+                        time;
                         named = "$(last(splitpath(case)))_$(timestep)h",
                     )
                 else

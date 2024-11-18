@@ -116,7 +116,11 @@ function main(args)
     # hard to solve configuration (0.01% gap)
     # solver = optimizer_with_attributes(HiGHS.Optimizer, "mip_rel_gap" => 0.0001)
     # easy configuration so that it is easy to print (50% gap)
-    solver = optimizer_with_attributes(HiGHS.Optimizer, "mip_rel_gap" => 0.5)
+    solver = optimizer_with_attributes(
+        HiGHS.Optimizer,
+        "mip_rel_gap" => 0.5,
+        # "time_limit" => 0.1,
+    )
 
     net_models = Dict(
         "CopperPlate" => CopperPlatePowerModel,
@@ -174,6 +178,8 @@ function main(args)
             )
 
             if get(parsed_args, "profile", "false") == "true"
+                # precompile run
+                build_and_solve(problem)
                 Profile.clear()
                 @profile build_and_solve(problem)
                 write_profile_data(profile_file_io, get_profile_data(list), named = "$(net_name)-$(h)-$(day)")

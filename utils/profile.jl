@@ -3,6 +3,8 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
+using Printf
+
 function work(node, func::Symbol, cont::Ref{Int})
     done = false
     if node.data.sf.func == func
@@ -39,6 +41,8 @@ end
 
 function get_profile_data(list)
 
+    @info("Processing profile data")
+
     profiler_data = Profile.fetch()
     profiler_graph = FlameGraphs.flamegraph(profiler_data)
     @assert length(list) > 1
@@ -61,6 +65,8 @@ function get_profile_data(list)
 
     result = Dict(zip(Symbol.(list[2:end]), percentages))
 
+    @info("Finished processing profile data")
+
     return result
 end
 
@@ -80,11 +86,11 @@ function create_profile_file(list; basepath = "", header = true, named = "")
 
     if header
         header_str = ""
-        if named != "Run"
-            header_str *= "Run,"
+        if named != ""
+            header_str *= "$named,"
         end
         for item in list[2:end]
-            header_str *= String(Symbol(item)) * ","
+            header_str *= String(Symbol(item)) * " (%),"
         end
         println(f, header_str[1:end-1])
     end
@@ -100,7 +106,7 @@ function write_profile_data(file, result; named = "")
         str *= named * ","
     end
     for item in list
-        str *= string(result[item]) * ","
+        str *= @sprintf("%1.2f", result[item]) * ","
     end
     println(f, str[1:end-1])
     return

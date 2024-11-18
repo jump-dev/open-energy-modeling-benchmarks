@@ -80,6 +80,8 @@ function main(args)
             end
             try
                 if get(parsed_args, "profile", "false") == "true"
+                    # precompile run
+                    GenX.run_genx_case!(case)
                     Profile.clear()
                     @profile GenX.run_genx_case!(case)
                     write_profile_data(profile_file_io, get_profile_data(list), named = "$(last(splitpath(case)))")

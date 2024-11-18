@@ -121,6 +121,8 @@ function main(args)
             end
             try
                 if get(parsed_args, "profile", "false") == "true"
+                    # precompile run
+                    build_and_solve(connection)
                     Profile.clear()
                     @profile build_and_solve(connection)
                     write_profile_data(profile_file_io, get_profile_data(list), named = "$(last(splitpath(case)))_$(timestep)h")

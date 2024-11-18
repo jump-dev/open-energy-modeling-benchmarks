@@ -87,6 +87,12 @@ function main(args)
                 solver,
             )
             if get(parsed_args, "profile", "false") == "true"
+                # precompile run
+                PowerModels.solve_ots(
+                    case,
+                    PowerModels.DCPPowerModel,
+                    solver,
+                )
                 Profile.clear()
                 @profile PowerModels.solve_ots(
                     case,

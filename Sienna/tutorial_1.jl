@@ -3,10 +3,12 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
-cd(@__DIR__)
-using Pkg
-Pkg.activate(".")
-ARGS = ["--case=CopperPlate-12-29", "--run", "--profile"]
+if isinteractive()
+    cd(@__DIR__)
+    using Pkg
+    Pkg.activate(".")
+    ARGS = ["--case=CopperPlate-12-29", "--run", "--profile"]
+end
 
 # necessary sienna stack
 using PowerSystems

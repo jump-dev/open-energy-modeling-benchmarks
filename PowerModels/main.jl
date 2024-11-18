@@ -3,10 +3,12 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
-cd(@__DIR__)
-using Pkg
-Pkg.activate(".")
-ARGS = ["--case=pglib_opf_case162_ieee_dtc.m", "--run", "--profile"]
+if isinteractive()
+    cd(@__DIR__)
+    using Pkg
+    Pkg.activate(".")
+    ARGS = ["--case=pglib_opf_case162_ieee_dtc.m", "--run", "--profile"]
+end
 
 import PowerModels
 # solver

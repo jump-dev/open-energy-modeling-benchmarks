@@ -23,7 +23,6 @@ jobs:
       - uses: julia-actions/cache@v1
       - uses: julia-actions/julia-buildpkg@v1
       - name: Test
-        shell: julia --color=yes {0}
         run: |
           julia --project=benchmark benchmark/main.jl --help
           julia --project=benchmark benchmark/main.jl --instance=GenX_1_three_zones-2b66b543f23170441438f4d10acfb436136aef55ebcc483d502c5493a62d163c.mps.gz --time_limit=0.1

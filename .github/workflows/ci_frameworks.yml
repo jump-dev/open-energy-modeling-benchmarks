@@ -1,4 +1,4 @@
-name: CI
+name: CI-Frameworks
 on:
   push:
     branches:
@@ -22,6 +22,18 @@ jobs:
             case: '1_three_zones'
             file: 'main.jl'
             os: ubuntu-latest
+          - framework: 'PowerModels'
+            case: 'pglib_opf_case162_ieee_dtc.m'
+            file: 'main.jl'
+            os: ubuntu-latest
+          - framework: 'Sienna'
+            case: 'PTDF-6-150'
+            file: 'tutorial_1.jl'
+            os: ubuntu-latest
+          # - framework: 'TulipaEnergyModel'
+          #   case: '1_EU_investment_simple'
+          #   file: 'main.jl'
+          #   os: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
@@ -38,5 +50,6 @@ jobs:
           Pkg.instantiate()
       - name: Test
         run: |
+          julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --help
           julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --all
-          julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --case=${{ matrix.case }}
+          julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --case=${{ matrix.case }} --run --write

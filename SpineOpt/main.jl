@@ -7,7 +7,8 @@ if isinteractive()
     cd(@__DIR__)
     using Pkg
     Pkg.activate(".")
-    ARGS = ["--case=1_electrolyzer_with_rolling_horizon.json", "--run", "--write"]
+    ARGS =
+        ["--case=1_electrolyzer_with_rolling_horizon.json", "--run", "--write"]
 end
 
 import SpineOpt
@@ -18,39 +19,40 @@ import SHA
 import PyCall
 
 # check python deps
-try 
+try
     PyCall.pyimport("spinedb_api")
 catch e
-    println("""
+    println(
+        """
 
-    ATTENTION!
+ATTENTION!
 
-    --- SpineOpt intall issue ---
+--- SpineOpt intall issue ---
 
-    Error importing the SpineOpt python dependency: spinedb_api
+Error importing the SpineOpt python dependency: spinedb_api
 
-    Please make sure the python environment is correctly set up
+Please make sure the python environment is correctly set up
 
-    You can install the dependencies by running the script:
+You can install the dependencies by running the script:
 
-    $(joinpath(@__DIR__, "install_spinedb_api.jl"))
+$(joinpath(@__DIR__, "install_spinedb_api.jl"))
 
-    Before you re-run "main.jl" script you will need to restart the Julia session.
+Before you re-run "main.jl" script you will need to restart the Julia session.
 
-    See the $(joinpath(@__DIR__, "README.md")) file for more information.
+See the $(joinpath(@__DIR__, "README.md")) file for more information.
 
-    Note.
-    PyCall.pyprogramname: $(PyCall.pyprogramname)
-    pyimport("sys").executable: $(PyCall.pyimport("sys").executable)
+Note.
+PyCall.pyprogramname: $(PyCall.pyprogramname)
+pyimport("sys").executable: $(PyCall.pyimport("sys").executable)
 
-    ---
+---
 
-    Now we rethrow the default error message from PyCall:
+Now we rethrow the default error message from PyCall:
 
-    """)
+""",
+    )
     rethrow(e)
 end
-
 
 function print_help()
     cases = readdir(joinpath(@__DIR__, "cases"); sort = false)

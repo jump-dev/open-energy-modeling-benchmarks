@@ -2682,7 +2682,7 @@
                                 ],
                                 [
                                     "mip_rel_gap",
-                                    0.01
+                                    0.50
                                 ],
                                 [
                                     "threads",
@@ -48829,7 +48829,7 @@
             "model_end",
             {
                 "type": "date_time",
-                "data": "2019-12-31T23:00:00"
+                "data": "2019-01-31T23:00:00"
             },
             "Base"
         ],
@@ -48849,7 +48849,7 @@
             "roll_forward",
             {
                 "type": "duration",
-                "data": "730h"
+                "data": "744h"
             },
             "Base"
         ],

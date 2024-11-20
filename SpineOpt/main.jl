@@ -3,6 +3,13 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
+if isinteractive()
+    cd(@__DIR__)
+    using Pkg
+    Pkg.activate(".")
+    ARGS = ["--case=1_electrolyzer_with_rolling_horizon.json", "--run", "--write"]
+end
+
 import SpineOpt
 import SpineInterface
 import JSON
@@ -11,7 +18,7 @@ import SHA
 
 function print_help()
     cases = readdir(joinpath(@__DIR__, "cases"); sort = false)
-    valid_cases = filter(c -> isdir(joinpath(@__DIR__, "cases", c)), cases)
+    valid_cases = filter(c -> isfile(joinpath(@__DIR__, "cases", c)), cases)
     print(
         """
         usage: julia --project=SpineOpt SpineOpt/main.jl \
@@ -101,7 +108,7 @@ function main(args)
                 SpineInterface.close_connection(db_url)
                 SpineInterface.open_connection(db_url)
                 SpineInterface.import_data(db_url, input_data, "No comment")
-                m = SpineOpt.run_spineopt(
+                @elapsed SpineOpt.run_spineopt(
                     db_url,
                     nothing;
                     log_level = 3,

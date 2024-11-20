@@ -94,6 +94,28 @@ julia --project=Sienna Sienna/tutorial_1.jl --case=PTDF-12 --run [--write]
 
 See the `Sienna/tutorial_1.jl` driver script for more details.
 
+### SpineOpt
+
+For now, we can rebuild all of the SpineOpt examples with (from the
+root of this directory):
+
+```
+make spineopt
+```
+
+To run a particular case, do:
+
+```
+julia --project=SpineOpt SpineOpt/main.jl --case=1_electrolyzer_with_rolling_horizon.json --run [--write]
+```
+
+See the `SpineOpt/main.jl` driver script for more details.
+
+* SpineOpt requires a python installation.
+* You might also need `libpq-dev` (`apt install libpq-dev`) to use `pg_config`,
+which is necessary to compile [`psycopg2`](https://www.psycopg.org/docs/install.html#prerequisites),
+which is necessary to use [`spinedb_api`](https://pypi.org/project/spinedb-api/).
+
 ### TulipaEnergyModel
 
 For now, we can rebuild all of the TulipaEnergyModel examples with (from the

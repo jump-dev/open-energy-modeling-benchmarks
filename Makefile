@@ -10,7 +10,8 @@ help:
 	@echo "  genx         write all GenX instances"
 	@echo "  powermodels  write all PowerModels instances"
 	@echo "  sienna       write all Sienna instances"
-  @echo "  tulipaenergymodel  write all TulipaEnergyModel instances"
+	@echo "  spineopt     write all SpineOpt instances"
+	@echo "  tulipaenergymodel  write all TulipaEnergyModel instances"
 	@echo "  [HIGHS=X.Y.Z] benchmark  run a new set of benchmarks, optionally with a version of HiGHS"
 	@echo "  analyze      print analysis of output"
 	@echo "  all          re-run all commands"
@@ -24,6 +25,9 @@ powermodels:
 sienna:
 	julia --project=Sienna Sienna/tutorial_1.jl --all --run --write
 
+spineopt:
+	julia --project=SpineOpt SpineOpt/main.jl --all --run --write
+
 tulipaenergymodel:
 	julia --project=TulipaEnergyModel TulipaEnergyModel/main.jl --all --run --write
 
@@ -31,13 +35,13 @@ benchmark:
 	@if [ ${HIGHS} ]; then\
 		echo ${HIGHS};\
 		julia --project=benchmark -e 'import Pkg; Pkg.add(; name = "HiGHS_jll", version = ENV["HIGHS"])';\
-    fi
+	fi
 	julia --project=benchmark -e "import Pkg; Pkg.instantiate()"
 	julia --project=benchmark benchmark/main.jl --all
 
 analyze:
 	julia --project=benchmark benchmark/main.jl --analyze
 
-all: genx powermodels sienna tulipaenergymodel
+all: genx powermodels sienna spineopt tulipaenergymodel
 
-.PHONY: default help genx powermodels sienna tulipaenergymodel benchmark analyze
+.PHONY: default help genx powermodels sienna spineopt tulipaenergymodel benchmark analyze

@@ -15,6 +15,42 @@ import SpineInterface
 import JSON
 import HiGHS
 import SHA
+import PyCall
+
+# check python deps
+try 
+    PyCall.pyimport("spinedb_api")
+catch e
+    println("""
+
+    ATTENTION!
+
+    --- SpineOpt intall issue ---
+
+    Error importing the SpineOpt python dependency: spinedb_api
+
+    Please make sure the python environment is correctly set up
+
+    You can install the dependencies by running the script:
+
+    $(joinpath(@__DIR__, "install_spinedb_api.jl"))
+
+    Before you re-run "main.jl" script you will need to restart the Julia session.
+
+    See the $(joinpath(@__DIR__, "README.md")) file for more information.
+
+    Note.
+    PyCall.pyprogramname: $(PyCall.pyprogramname)
+    pyimport("sys").executable: $(PyCall.pyimport("sys").executable)
+
+    ---
+
+    Now we rethrow the default error message from PyCall:
+
+    """)
+    rethrow(e)
+end
+
 
 function print_help()
     cases = readdir(joinpath(@__DIR__, "cases"); sort = false)

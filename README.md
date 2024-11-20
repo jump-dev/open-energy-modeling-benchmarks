@@ -111,10 +111,9 @@ julia --project=SpineOpt SpineOpt/main.jl --case=1_electrolyzer_with_rolling_hor
 
 See the `SpineOpt/main.jl` driver script for more details.
 
-* SpineOpt requires a python installation.
-* You might also need `libpq-dev` (`apt install libpq-dev`) to use `pg_config`,
-which is necessary to compile [`psycopg2`](https://www.psycopg.org/docs/install.html#prerequisites),
-which is necessary to use [`spinedb_api`](https://pypi.org/project/spinedb-api/).
+* SpineOpt requires a python installation and additional install steps.
+See the [SpineOpt/README](https://github.com/jump-dev/open-energy-modeling-benchmarks/blob/main/SpineOpt/README.md).
+
 
 ### TulipaEnergyModel
 

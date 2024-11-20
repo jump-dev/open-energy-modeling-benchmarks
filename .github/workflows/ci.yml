@@ -32,14 +32,11 @@ jobs:
       - name: Instantiate
         shell: julia --color=yes {0}
         run: |
-          @show pwd()
           cd(ENV["FRAMEWORK"])
           import Pkg
           Pkg.activate(".")
           Pkg.instantiate()
       - name: Test
         run: |
-          pwd
-          echo pwd
-          julia --project=GenX GenX/main.jl --all
-          julia --project=GenX GenX/main.jl --case=1_three_zones
+          julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --all
+          julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --case=${{ matrix.case }}

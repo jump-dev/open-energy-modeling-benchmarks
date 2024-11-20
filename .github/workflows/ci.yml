@@ -1,0 +1,45 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+      - release-*
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  test:
+    name: ${{ matrix.framework }} - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      FRAMEWORK: ${{ matrix.framework }}
+      CASE: ${{ matrix.case }}
+      FILE: ${{ matrix.file }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - framework: 'GenX'
+            case: '1_three_zones'
+            file: 'main.jl'
+            os: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+      - uses: julia-actions/cache@v1
+      - uses: julia-actions/julia-buildpkg@v1
+      - name: Instantiate
+        shell: julia --color=yes {0}
+        run: |
+          @show pwd()
+          cd(ENV["FRAMEWORK"])
+          import Pkg
+          Pkg.activate(".")
+          Pkg.instantiate()
+      - name: Test
+        run: |
+          pwd
+          echo pwd
+          julia --project=GenX GenX/main.jl --all
+          julia --project=GenX GenX/main.jl --case=1_three_zones

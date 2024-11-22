@@ -99,13 +99,13 @@ See the `Sienna/tutorial_1.jl` driver script for more details.
 For now, we can rebuild all of the SpineOpt examples with (from the
 root of this directory):
 
-```
+```sh
 make spineopt
 ```
 
 To run a particular case, do:
 
-```
+```sh
 julia --project=SpineOpt SpineOpt/main.jl --case=1_electrolyzer_with_rolling_horizon.json --run [--write]
 ```
 

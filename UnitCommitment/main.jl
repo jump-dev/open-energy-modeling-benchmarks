@@ -3,6 +3,13 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
+if isinteractive()
+    cd(@__DIR__)
+    using Pkg
+    Pkg.activate(".")
+    ARGS = ["--all", "--run", "--write"]
+end
+
 import HiGHS
 import JuMP
 import UnitCommitment
@@ -82,8 +89,14 @@ function uc_valid_cases()
         "pglib-uc/ferc/2015-01-01_lw",
         "pglib-uc/ca/2014-09-01_reserves_0",
         "pglib-uc/rts_gmlc/2020-01-27",
+        "matpower/case1888rte/2017-01-01",
+        "matpower/case1951rte/2017-01-01",
+        "matpower/case2848rte/2017-01-01",
+        "matpower/case3012wp/2017-01-01",
         "matpower/case6468rte/2017-01-01",
         "matpower/case6470rte/2017-01-01",
+        # "matpower/case6495rte/2017-01-01",
+        # "matpower/case6515rte/2017-01-01",
     ]
 end
 
@@ -97,15 +110,11 @@ function main(args)
     if get(parsed_args, "all", "false") == "true"
         append!(cases, uc_valid_cases())
     else
-        push!(cases, joinpath(@__DIR__, "cases", parsed_args["case"]))
+        push!(cases, parsed_args["case"])
     end
     for case in cases
         @info("Running $case")
         if get(parsed_args, "run", "false") == "true"
-            HIGHS_WRITE_FILE_PREFIX[] = "UnitCommitment_$(replace(case, "/" => "_"))"
-            if !write_files
-                HIGHS_WRITE_FILE_PREFIX[] = ""
-            end
             try
                 # Read benchmark instance
                 instance = UnitCommitment.read_benchmark(case)
@@ -115,12 +124,23 @@ function main(args)
                     # optimizer = HiGHS.Optimizer,
                     optimizer = JuMP.optimizer_with_attributes(
                         HiGHS.Optimizer,
-                        "mip_rel_gap" => 0.05,
+                        # "mip_rel_gap" => 0.05,
+                        "time_limit" => 600.0,
                     ),
                 )
-                JuMP.set_time_limit_sec(model, 30)
-                # Solve model
-                JuMP.optimize!(model)
+                # iterative model, so we do no write files
+                HIGHS_WRITE_FILE_PREFIX[] = ""
+                UnitCommitment.optimize!(model,
+                    UnitCommitment.XavQiuWanThi2019.Method(
+                        time_limit = 600.0,
+                    )
+                )
+                # we only write files for the last model
+                if write_files
+                    HIGHS_WRITE_FILE_PREFIX[] = "UnitCommitment_$(replace(case, "/" => "_"))"
+                    JuMP.set_time_limit_sec(model, 0.0)
+                    JuMP.optimize!(model)
+                end
             catch e
                 println("Error running $case")
                 @show e

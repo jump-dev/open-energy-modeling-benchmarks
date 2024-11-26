@@ -120,14 +120,31 @@ See the [SpineOpt/README](https://github.com/jump-dev/open-energy-modeling-bench
 For now, we can rebuild all of the TulipaEnergyModel examples with (from the
 root of this directory):
 
-```
+```sh
 make tulipaenergymodel
 ```
 
 To run a particular case, do:
 
-```
+```sh
 julia --project=TulipaEnergyModel TulipaEnergyModel/main.jl --case=1_EU_investment_simple --run [--write]
 ```
 
 See the `TulipaEnergyModel/main.jl` driver script for more details.
+
+### UnitCommitment
+
+For now, we can rebuild all of the UnitCommitment examples with (from the
+root of this directory):
+
+```sh
+make unitcommitment
+```
+
+To run a particular case, do:
+
+```sh
+julia --project=UnitCommitment UnitCommitment/main.jl --case=matpower/case1888rte/2017-01-01 --run [--write]
+```
+
+See the `UnitCommitment/main.jl` driver script for more details.

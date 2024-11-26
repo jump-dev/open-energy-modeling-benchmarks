@@ -7,16 +7,25 @@ default: help
 
 help:
 	@echo "The following make commands are available:"
-	@echo "  genx     write all GenX instances"
+	@echo "  genx         write all GenX instances"
+	@echo "  powermodels  write all PowerModels instances"
+	@echo "  sienna       write all Sienna instances"
+  @echo "  tulipaenergymodel  write all TulipaEnergyModel instances"
 	@echo "  [HIGHS=X.Y.Z] benchmark  run a new set of benchmarks, optionally with a version of HiGHS"
-	@echo "  analyze  print analysis of output"
-	@echo "  all      re-run all commands"
+	@echo "  analyze      print analysis of output"
+	@echo "  all          re-run all commands"
 
 genx:
 	julia --project=GenX GenX/main.jl --all --run --write
 
+powermodels:
+	julia --project=PowerModels PowerModels/main.jl --all --run --write
+
 sienna:
-	julia --project=SIenna Sienna/tutorial_1.jl --all --run --write
+	julia --project=Sienna Sienna/tutorial_1.jl --all --run --write
+
+tulipaenergymodel:
+	julia --project=TulipaEnergyModel TulipaEnergyModel/main.jl --all --run --write
 
 benchmark:
 	@if [ ${HIGHS} ]; then\
@@ -29,6 +38,6 @@ benchmark:
 analyze:
 	julia --project=benchmark benchmark/main.jl --analyze
 
-all: genx
+all: genx powermodels sienna tulipaenergymodel
 
-.PHONY: default help genx benchmark analyze
+.PHONY: default help genx powermodels sienna tulipaenergymodel benchmark analyze

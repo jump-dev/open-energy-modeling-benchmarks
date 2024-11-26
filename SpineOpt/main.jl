@@ -3,15 +3,60 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
+if isinteractive()
+    cd(@__DIR__)
+    using Pkg
+    Pkg.activate(".")
+    ARGS =
+        ["--case=1_electrolyzer_with_rolling_horizon.json", "--run", "--write"]
+end
+
 import SpineOpt
 import SpineInterface
 import JSON
 import HiGHS
 import SHA
+import PyCall
+
+# check python deps
+try
+    PyCall.pyimport("spinedb_api")
+catch e
+    println(
+        """
+
+ATTENTION!
+
+--- SpineOpt intall issue ---
+
+Error importing the SpineOpt python dependency: spinedb_api
+
+Please make sure the python environment is correctly set up
+
+You can install the dependencies by running the script:
+
+$(joinpath(@__DIR__, "install_spinedb_api.jl"))
+
+Before you re-run "main.jl" script you will need to restart the Julia session.
+
+See the $(joinpath(@__DIR__, "README.md")) file for more information.
+
+Note.
+PyCall.pyprogramname: $(PyCall.pyprogramname)
+pyimport("sys").executable: $(PyCall.pyimport("sys").executable)
+
+---
+
+Now we rethrow the default error message from PyCall:
+
+""",
+    )
+    rethrow(e)
+end
 
 function print_help()
     cases = readdir(joinpath(@__DIR__, "cases"); sort = false)
-    valid_cases = filter(c -> isdir(joinpath(@__DIR__, "cases", c)), cases)
+    valid_cases = filter(c -> isfile(joinpath(@__DIR__, "cases", c)), cases)
     print(
         """
         usage: julia --project=SpineOpt SpineOpt/main.jl \
@@ -101,7 +146,7 @@ function main(args)
                 SpineInterface.close_connection(db_url)
                 SpineInterface.open_connection(db_url)
                 SpineInterface.import_data(db_url, input_data, "No comment")
-                m = SpineOpt.run_spineopt(
+                @elapsed SpineOpt.run_spineopt(
                     db_url,
                     nothing;
                     log_level = 3,

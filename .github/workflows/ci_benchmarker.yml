@@ -1,0 +1,36 @@
+name: CI-Benchmarker
+on:
+  push:
+    branches:
+      - master
+      - release-*
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  test:
+    name: Benchmarker - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - uses: julia-actions/cache@v1
+      - uses: julia-actions/julia-buildpkg@v1
+      - name: Instantiate
+        shell: julia --color=yes {0}
+        run: |
+          cd("benchmark")
+          import Pkg
+          Pkg.activate(".")
+          Pkg.instantiate()
+      - name: Test
+        run: |
+          julia --project=benchmark benchmark/main.jl --help
+          julia --project=benchmark benchmark/main.jl --instance=GenX_1_three_zones-2b66b543f23170441438f4d10acfb436136aef55ebcc483d502c5493a62d163c.mps.gz --time_limit=0.1
+          julia --project=benchmark benchmark/main.jl --analyze

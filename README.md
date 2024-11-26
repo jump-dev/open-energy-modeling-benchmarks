@@ -94,6 +94,27 @@ julia --project=Sienna Sienna/tutorial_1.jl --case=PTDF-12 --run [--write]
 
 See the `Sienna/tutorial_1.jl` driver script for more details.
 
+### SpineOpt
+
+For now, we can rebuild all of the SpineOpt examples with (from the
+root of this directory):
+
+```sh
+make spineopt
+```
+
+To run a particular case, do:
+
+```sh
+julia --project=SpineOpt SpineOpt/main.jl --case=1_electrolyzer_with_rolling_horizon.json --run [--write]
+```
+
+See the `SpineOpt/main.jl` driver script for more details.
+
+* SpineOpt requires a python installation and additional install steps.
+See the [SpineOpt/README](https://github.com/jump-dev/open-energy-modeling-benchmarks/blob/main/SpineOpt/README.md).
+
+
 ### TulipaEnergyModel
 
 For now, we can rebuild all of the TulipaEnergyModel examples with (from the

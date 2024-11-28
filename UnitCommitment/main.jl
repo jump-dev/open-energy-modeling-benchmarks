@@ -17,7 +17,6 @@ import SHA
 import Dates
 
 function print_help()
-    cases = readdir(joinpath(@__DIR__, "cases"); sort = false)
     valid_cases = uc_valid_cases()
     print(
         """
@@ -95,8 +94,6 @@ function uc_valid_cases()
         "matpower/case3012wp/2017-01-01",
         "matpower/case6468rte/2017-01-01",
         "matpower/case6470rte/2017-01-01",
-        # "matpower/case6495rte/2017-01-01",
-        # "matpower/case6515rte/2017-01-01",
     ]
 end
 
@@ -124,7 +121,7 @@ function main(args)
                     # optimizer = HiGHS.Optimizer,
                     optimizer = JuMP.optimizer_with_attributes(
                         HiGHS.Optimizer,
-                        # "mip_rel_gap" => 0.05,
+                        "mip_rel_gap" => 0.01,
                         "time_limit" => 600.0,
                     ),
                 )

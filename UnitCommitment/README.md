@@ -19,3 +19,15 @@ UnitCommitment license can be found at [https://github.com/ANL-CEEESA/UnitCommit
 ## Structure
 
 The script in `main.jl` was inspired in code extracted from the documentation.
+
+## Notes
+
+This package add network constraints (including contigencies) iteratively.
+Hence, the JuMP model built with `UnitCommitment.build_model` contains no
+network constraints and, consequently, solving this model with
+`JuMP.optimize!` tipically solves a simpler problem. On the other hand,
+instances generated after the first round of adding network constraints
+tend to have the same difficulty level. This requires
+`UnitCommitment.optimize!`. However, there is no control to stop right after
+the first iteration, so we attempt to emulate such procedure by setting a time
+limit of 600s for both the algorithm and the HiGHS solver and a tight gap.

@@ -39,7 +39,7 @@ This repository is organized as follows:
 
 Rebuild all instances with:
 
-```
+```sh
 make all
 ```
 
@@ -48,13 +48,13 @@ make all
 For now, we can rebuild all of the GenX examples with (from the root of this
 directory):
 
-```
+```sh
 make genx
 ```
 
 To run a particular case, do:
 
-```
+```sh
 julia --project=GenX GenX/main.jl --case=1_three_zones --run [--write]
 ```
 
@@ -65,13 +65,13 @@ See the `GenX/main.jl` driver script for more details.
 For now, we can rebuild all of the PowerModels examples with (from the root of
 this directory):
 
-```
+```sh
 make powermodels
 ```
 
 To run a particular case, do:
 
-```
+```sh
 julia --project=PowerModels PowerModels/main.jl --case=pglib_opf_case1951_rte.m --run [--write]
 ```
 
@@ -82,13 +82,13 @@ See the `PowerModels/main.jl` driver script for more details.
 For now, we can rebuild all of the Sienna examples with (from the root of this
 directory):
 
-```
+```sh
 make sienna
 ```
 
 To run a particular case, do:
 
-```
+```sh
 julia --project=Sienna Sienna/tutorial_1.jl --case=PTDF-12 --run [--write]
 ```
 

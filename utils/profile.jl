@@ -119,7 +119,7 @@ end
 
 macro proflist(exp, list)
     val = Meta.quot(exp.args[1])
-    if typeof(val) != Symbol
+    if typeof(exp.args[1]) != Symbol
         val = Meta.quot(exp.args[1].args[2].value)
     end
     return quote

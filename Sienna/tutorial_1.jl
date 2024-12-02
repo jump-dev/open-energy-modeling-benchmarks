@@ -174,11 +174,8 @@ function main(args)
             if get(parsed_args, "profile", "false") == "true"
                 # precompile run
                 build_and_solve(problem)
-                data = @proflist build_and_solve(problem) [
-                    JuMP,
-                    HiGHS,
-                    :Highs_run,
-                ]
+                data =
+                    @proflist build_and_solve(problem) [JuMP, HiGHS, :Highs_run]
                 save_proflist(
                     data;
                     output_filename = joinpath(

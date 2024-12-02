@@ -77,7 +77,9 @@ function get_profile_data(list)
 
     for item in list
         if !(typeof(item) == Symbol || typeof(item) == Module)
-            error("Invalid type for item in list, expected Symbol or Module and got $(typeof(item))")
+            error(
+                "Invalid type for item in list, expected Symbol or Module and got $(typeof(item))",
+            )
         end
         time = get_duration(profiler_graph, item)
         push!(result, Symbol(item) => time)

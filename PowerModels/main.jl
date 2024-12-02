@@ -79,11 +79,11 @@ function main(args)
             if get(parsed_args, "profile", "false") == "true"
                 # precompile run
                 PowerModels.solve_ots(case, PowerModels.DCPPowerModel, solver)
-                data = @proflist PowerModels.solve_ots(case, PowerModels.DCPPowerModel, solver) [
-                    JuMP,
-                    HiGHS,
-                    :Highs_run,
-                ]
+                data = @proflist PowerModels.solve_ots(
+                    case,
+                    PowerModels.DCPPowerModel,
+                    solver,
+                ) [JuMP, HiGHS, :Highs_run]
                 save_proflist(
                     data;
                     output_filename = joinpath(

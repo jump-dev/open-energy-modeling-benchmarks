@@ -11,17 +11,17 @@ if isinteractive()
 end
 
 # necessary sienna stack
-using PowerSystems
-using PowerSimulations
-using HydroPowerSimulations
-using PowerSystemCaseBuilder
+import PowerSystems
+import PowerSimulations
+import HydroPowerSimulations
+import PowerSystemCaseBuilder
 # solver
-using JuMP
-using HiGHS
+import JuMP
+import HiGHS
 # julia base
-using Dates
-using SHA
-using Logging
+import Dates
+import SHA
+import Logging
 # profile
 import Profile
 import FlameGraphs
@@ -76,10 +76,14 @@ function build_and_solve(problem)
     file_name = HIGHS_WRITE_FILE_PREFIX[]
     # skip the first file print
     HIGHS_WRITE_FILE_PREFIX[] = ""
-    build!(problem; output_dir = mktempdir(), console_level = Logging.Info)
+    PowerSimulations.build!(
+        problem;
+        output_dir = mktempdir(),
+        console_level = Logging.Info,
+    )
     # write the file
     HIGHS_WRITE_FILE_PREFIX[] = file_name
-    solve!(problem; console_level = Logging.Info)
+    PowerSimulations.solve!(problem; console_level = Logging.Info)
     return
 end
 
@@ -95,47 +99,89 @@ function main(args)
     write_files = get(parsed_args, "write", "false") == "true"
 
     # case data is downloaded from a julia artifcat
-    sys = build_system(PSISystems, "modified_RTS_GMLC_DA_sys")
-
-    template_uc = ProblemTemplate()
-
-    set_device_model!(template_uc, Line, StaticBranch)
-    set_device_model!(template_uc, Transformer2W, StaticBranch)
-    set_device_model!(template_uc, TapTransformer, StaticBranch)
-
-    set_device_model!(
-        template_uc,
-        ThermalStandard,
-        ThermalStandardUnitCommitment,
+    sys = PowerSystemCaseBuilder.build_system(
+        PowerSystemCaseBuilder.PSISystems,
+        "modified_RTS_GMLC_DA_sys",
     )
-    set_device_model!(template_uc, RenewableDispatch, RenewableFullDispatch)
-    set_device_model!(template_uc, PowerLoad, StaticPowerLoad)
-    set_device_model!(template_uc, HydroDispatch, HydroDispatchRunOfRiver)
-    set_device_model!(template_uc, RenewableNonDispatch, FixedOutput)
 
-    set_service_model!(template_uc, VariableReserve{ReserveUp}, RangeReserve)
-    set_service_model!(template_uc, VariableReserve{ReserveDown}, RangeReserve)
+    template_uc = PowerSimulations.ProblemTemplate()
+
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.Line,
+        PowerSimulations.StaticBranch,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.Transformer2W,
+        PowerSimulations.StaticBranch,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.TapTransformer,
+        PowerSimulations.StaticBranch,
+    )
+
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.ThermalStandard,
+        PowerSimulations.ThermalStandardUnitCommitment,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.RenewableDispatch,
+        PowerSimulations.RenewableFullDispatch,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.PowerLoad,
+        PowerSimulations.StaticPowerLoad,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.HydroDispatch,
+        HydroPowerSimulations.HydroDispatchRunOfRiver,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.RenewableNonDispatch,
+        PowerSimulations.FixedOutput,
+    )
+
+    PowerSimulations.set_service_model!(
+        template_uc,
+        PowerSystems.VariableReserve{PowerSystems.ReserveUp},
+        PowerSimulations.RangeReserve,
+    )
+    PowerSimulations.set_service_model!(
+        template_uc,
+        PowerSystems.VariableReserve{PowerSystems.ReserveDown},
+        PowerSimulations.RangeReserve,
+    )
 
     # hard to solve configuration (0.01% gap)
     # solver = optimizer_with_attributes(HiGHS.Optimizer, "mip_rel_gap" => 0.0001)
     # easy configuration so that it is easy to print (50% gap)
-    solver = optimizer_with_attributes(
+    solver = JuMP.optimizer_with_attributes(
         HiGHS.Optimizer,
         "mip_rel_gap" => 0.5,
         # "time_limit" => 0.1,
     )
 
     net_models = Dict(
-        "CopperPlate" => CopperPlatePowerModel,
-        "PTDF" => PTDFPowerModel,
-        "DC" => DCPPowerModel,
-        "Transport" => NFAPowerModel,
+        "CopperPlate" => PowerSimulations.CopperPlatePowerModel,
+        "PTDF" => PowerSimulations.PTDFPowerModel,
+        "DC" => PowerSimulations.DCPPowerModel,
+        "Transport" => PowerSimulations.NFAPowerModel,
     )
 
     parsed_args_all = get(parsed_args, "all", "false")
 
     for net_name in network_options()
-        set_network_model!(template_uc, NetworkModel(net_models[net_name]))
+        PowerSimulations.set_network_model!(
+            template_uc,
+            PowerSimulations.NetworkModel(net_models[net_name]),
+        )
         for h in 1:48, day in 1:365
             if parsed_args_all == "true"
                 if day in days_options() && h in horizon_options()
@@ -161,13 +207,13 @@ function main(args)
                 HIGHS_WRITE_FILE_PREFIX[] = model_name
             end
 
-            problem = DecisionModel(
+            problem = PowerSimulations.DecisionModel(
                 template_uc,
                 sys;
                 optimizer = solver,
-                horizon = Hour(h),
-                initial_time = DateTime("2020-01-01T00:00:00") +
-                               Hour((day - 1) * 24),
+                horizon = Dates.Hour(h),
+                initial_time = Dates.DateTime("2020-01-01T00:00:00") +
+                               Dates.Hour((day - 1) * 24),
                 optimizer_solve_log_print = true,
             )
 

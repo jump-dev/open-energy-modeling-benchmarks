@@ -5,7 +5,7 @@
 
 if isinteractive()
     cd(@__DIR__)
-    using Pkg
+    import Pkg
     Pkg.activate(".")
     ARGS = ["--case=1_three_zones", "--run", "--profile"]
 end
@@ -13,13 +13,14 @@ end
 import GenX
 import HiGHS
 # solver
-using JuMP
-using HiGHS
+import JuMP
+import HiGHS
 # julia base
 import SHA
 # profile
-using Profile
-using FlameGraphs
+import Profile
+import FlameGraphs
+import JSON
 
 # helper functions
 include("../utils/utils.jl")
@@ -45,8 +46,8 @@ function print_help()
          * `--all`    if passed, `--case` must not be passed, and the argument
                       will loop over all valid cases
          * `--help`   print this help message
-         * `--run`    if provided, execute the case with `GenX.run_genx_case!`
-         * `--write`  if provided, write out files to
+         * `--write`  if provided, write out files to disk
+         * `--profile` if provided, profile the case and write to `profile.jsonl`
         """,
     )
     return
@@ -64,28 +65,30 @@ function main(args)
     else
         push!(cases, joinpath(@__DIR__, "cases", parsed_args["case"]))
     end
-    list = [:run_genx_case!, JuMP, HiGHS, :Highs_run]
-    if get(parsed_args, "profile", "false") == "true"
-        profile_file_io = create_profile_file(list; named = "Sienna Run")
-    end
     for case in cases
         @info("Running $case")
         if get(parsed_args, "run", "false") == "true"
+            model_name = "GenX_$(last(splitpath(case)))"
             HIGHS_WRITE_FILE_PREFIX[] = ""
             if write_files
-                HIGHS_WRITE_FILE_PREFIX[] = "GenX_$(last(splitpath(case)))"
+                HIGHS_WRITE_FILE_PREFIX[] = model_name
             end
             try
                 if get(parsed_args, "profile", "false") == "true"
                     # precompile run
                     GenX.run_genx_case!(case)
-                    Profile.clear()
-                    time = @elapsed @profile GenX.run_genx_case!(case)
-                    write_profile_data(
-                        profile_file_io,
-                        get_profile_data(list),
-                        time;
-                        named = "$(last(splitpath(case)))",
+                    data = @proflist GenX.run_genx_case!(case) [
+                        JuMP,
+                        HiGHS,
+                        :Highs_run,
+                    ]
+                    save_proflist(
+                        data;
+                        output_filename = joinpath(
+                            dirname(@__DIR__),
+                            "profile.jsonl",
+                        ),
+                        label = model_name,
                     )
                 else
                     GenX.run_genx_case!(case)
@@ -96,9 +99,6 @@ function main(args)
                 @show e
             end
         end
-    end
-    if get(parsed_args, "profile", "false") == "true"
-        close_profile_file(profile_file_io)
     end
     return
 end

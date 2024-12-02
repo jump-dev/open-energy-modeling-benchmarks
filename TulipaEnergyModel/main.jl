@@ -5,7 +5,7 @@
 
 if isinteractive()
     cd(@__DIR__)
-    using Pkg
+    import Pkg
     Pkg.activate(".")
     ARGS = ["--case=1_EU_investment_simple-24", "--run", "--profile"]
 end
@@ -16,13 +16,14 @@ import DBInterface
 import DuckDB
 import TulipaIO as TIO
 # solver
-using JuMP
-using HiGHS
+import JuMP
+import HiGHS
 # julia base
 import SHA
 # profile
-using Profile
-using FlameGraphs
+import Profile
+import FlameGraphs
+import JSON
 
 # helper functions
 include("../utils/utils.jl")
@@ -51,7 +52,8 @@ function print_help()
                       will loop over all valid cases
          * `--help`   print this help message
          * `--run`    if provided, execute the case with `TulipaEnergyModel.run_scenario`
-         * `--write`  if provided, write out files to
+         * `--write`  if provided, write out files to disk
+         * `--profile` if provided, profile the case and write to `profile.jsonl`
         """,
     )
     return
@@ -89,12 +91,6 @@ function main(args)
         push!(cases, (joinpath(@__DIR__, "cases", case), parse(Int, timestep)))
     end
 
-    list = [:build_and_solve, JuMP, HiGHS, :Highs_run]
-
-    if get(parsed_args, "profile", "false") == "true"
-        profile_file_io = create_profile_file(list; named = "Tulipa Run")
-    end
-
     for (case, timestep) in cases
         @info("Running $case for $timestep timesteps")
         connection = DBInterface.connect(DuckDB.DB)
@@ -108,8 +104,9 @@ function main(args)
             "UPDATE rep_periods_data SET num_timesteps = $timestep WHERE year = 2030 AND rep_period = 1",
         )
         # To get access to the JuMP model, use `energy_problem.model`
+        model_name = "TulipaEnergyModel_$(last(splitpath(case)))_$(timestep)h"
         if get(parsed_args, "run", "false") == "true"
-            HIGHS_WRITE_FILE_PREFIX[] = "TulipaEnergyModel_$(last(splitpath(case)))_$(timestep)h"
+            HIGHS_WRITE_FILE_PREFIX[] = model_name
             if !write_files
                 HIGHS_WRITE_FILE_PREFIX[] = ""
             end
@@ -117,13 +114,18 @@ function main(args)
                 if get(parsed_args, "profile", "false") == "true"
                     # precompile run
                     build_and_solve(connection)
-                    Profile.clear()
-                    time = @elapsed @profile build_and_solve(connection)
-                    write_profile_data(
-                        profile_file_io,
-                        get_profile_data(list),
-                        time;
-                        named = "$(last(splitpath(case)))_$(timestep)h",
+                    data = @proflist build_and_solve(connection) [
+                        JuMP,
+                        HiGHS,
+                        :Highs_run,
+                    ]
+                    save_proflist(
+                        data;
+                        output_filename = joinpath(
+                            dirname(@__DIR__),
+                            "profile.jsonl",
+                        ),
+                        label = model_name,
                     )
                 else
                     build_and_solve(connection)
@@ -133,9 +135,6 @@ function main(args)
                 @show e
             end
         end
-    end
-    if get(parsed_args, "profile", "false") == "true"
-        close_profile_file(profile_file_io)
     end
     return
 end

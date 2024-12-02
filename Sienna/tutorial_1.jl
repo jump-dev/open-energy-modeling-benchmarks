@@ -5,7 +5,7 @@
 
 if isinteractive()
     cd(@__DIR__)
-    using Pkg
+    import Pkg
     Pkg.activate(".")
     ARGS = ["--case=CopperPlate-12-29", "--run", "--profile"]
 end
@@ -23,8 +23,9 @@ using Dates
 using SHA
 using Logging
 # profile
-using Profile
-using FlameGraphs
+import Profile
+import FlameGraphs
+import JSON
 
 # helper functions
 include("../utils/utils.jl")
@@ -56,8 +57,8 @@ function print_help()
                       days and horizons.
          * `--help`   print this help message
          * `--run`    if provided, execute the case
-         * `--write`  if provided, write out files to
-         * `--profile`  profile the code
+         * `--write`  if provided, write out files to disk
+         * `--profile` if provided, profile the case and write to `profile.jsonl`
         """,
     )
     return
@@ -133,12 +134,6 @@ function main(args)
 
     parsed_args_all = get(parsed_args, "all", "false")
 
-    list = [:build_and_solve, JuMP, HiGHS, :Highs_run]
-
-    if get(parsed_args, "profile", "false") == "true"
-        profile_file_io = create_profile_file(list; named = "Sienna Run")
-    end
-
     for net_name in network_options()
         set_network_model!(template_uc, NetworkModel(net_models[net_name]))
         for h in 1:48, day in 1:365
@@ -159,9 +154,11 @@ function main(args)
                 continue
             end
 
+            model_name = "Sienna_modified_RTS_GMLC_DA_sys_Net$(net_name)_Horizon$(h)_Day$day"
+
             HIGHS_WRITE_FILE_PREFIX[] = ""
             if write_files
-                HIGHS_WRITE_FILE_PREFIX[] = "Sienna_modified_RTS_GMLC_DA_sys_Net$(net_name)_Horizon$(h)_Day$day"
+                HIGHS_WRITE_FILE_PREFIX[] = model_name
             end
 
             problem = DecisionModel(
@@ -177,13 +174,18 @@ function main(args)
             if get(parsed_args, "profile", "false") == "true"
                 # precompile run
                 build_and_solve(problem)
-                Profile.clear()
-                time = @elapsed @profile build_and_solve(problem)
-                write_profile_data(
-                    profile_file_io,
-                    get_profile_data(list),
-                    time;
-                    named = "$(net_name)-$(h)-$(day)",
+                data = @proflist build_and_solve(problem) [
+                    JuMP,
+                    HiGHS,
+                    :Highs_run,
+                ]
+                save_proflist(
+                    data;
+                    output_filename = joinpath(
+                        dirname(@__DIR__),
+                        "profile.jsonl",
+                    ),
+                    label = model_name,
                 )
             else
                 build_and_solve(problem)
@@ -191,9 +193,6 @@ function main(args)
         end
     end
 
-    if get(parsed_args, "profile", "false") == "true"
-        close_profile_file(profile_file_io)
-    end
     return
 end
 

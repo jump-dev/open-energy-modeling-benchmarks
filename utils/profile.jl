@@ -3,117 +3,148 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
-using Printf
+import Profile
+import FlameGraphs
+import JSON
+import Dates
 
-function work(node, func::Symbol, cont::Ref{Int})
+# example usage
+
+# function f1(a)
+#     sleep(1)
+#     return f2()
+# end
+
+# function f2()
+#     sleep(2)
+#     return
+# end
+
+# @list_profile f1(3) [:f2,]
+
+# obtain duration of a specific function and every call below it
+# hence this stops the recursion
+function add_duration(node, function_symbol::Symbol, cont::Ref{Int})
     done = false
-    if node.data.sf.func == func
+    if node.data.sf.func == function_symbol
         cont[] += length(node.data.span)
         done = true
     end
     return done
 end
 
-function work(node, path_begin::String, cont::Ref{Int})
+# obtain duration of any function from module `module_path` function and
+# every call below it hence this stops the recursion
+function add_duration(node, module_path::String, cont::Ref{Int})
     done = false
-    if startswith(String(node.data.sf.file), path_begin)
+    if startswith(String(node.data.sf.file), module_path)
         cont[] += length(node.data.span)
         done = true
     end
     return done
 end
 
-# LeftChildRightSiblingTrees traversal
-function dowork(node, data, cont)
-    done = work(node, data, cont)
+# LeftChildRightSiblingTrees.jl traversal
+function get_duration(node, data, cont)
+    done = add_duration(node, data, cont)
     if done
         return
     end
     for child in node
-        dowork(child, data, cont)
+        get_duration(child, data, cont)
     end
     return
 end
 
-function dowork(node, mod::Module, cont)
-    return dowork(node, pathof(mod) |> dirname, cont)
+function get_duration(node, mod::Module)
+    cont = Ref{Int}(0)
+    get_duration(node, pathof(mod) |> dirname, cont)
+    return cont[]
+end
+
+function get_duration(node, func::Symbol)
+    cont = Ref{Int}(0)
+    get_duration(node, func, cont)
+    return cont[]
 end
 
 function get_profile_data(list)
-    @info("Processing profile data")
-
     profiler_data = Profile.fetch()
     profiler_graph = FlameGraphs.flamegraph(profiler_data)
     @assert length(list) > 1
 
-    times = Int[]
+    result = Pair{Symbol,Int}[]
 
     for item in list
-        @assert typeof(item) == Symbol || typeof(item) == Module
-        val = Ref{Int}(0)
-        dowork(profiler_graph, item, val)
-        push!(times, val[])
+        if !(typeof(item) == Symbol || typeof(item) == Module)
+            error("Invalid type for item in list, expected Symbol or Module and got $(typeof(item))")
+        end
+        time = get_duration(profiler_graph, item)
+        push!(result, Symbol(item) => time)
     end
-
-    total = times[1]
-
-    percentages = Float64[]
-    for time in times[2:end]
-        push!(percentages, time / total * 100)
-    end
-
-    result = Dict(zip(Symbol.(list[2:end]), percentages))
-
-    @info("Finished processing profile data")
 
     return result
 end
 
-function create_profile_file(list; basepath = "", header = true, named = "")
-    if basepath == ""
-        basepath = pwd()
-    end
-    file_name = joinpath(basepath, "prof.csv")
-    if isfile(file_name)
-        try
-            rm(file_name)
-        catch
-            @info("Could not remove existing profile file $file_name")
-        end
-    end
-    f = open(file_name, "w")
-
-    if header
-        header_str = ""
-        if named != ""
-            header_str *= "$named,"
-        end
-        header_str *= "time (s),"
-        for item in list[2:end]
-            header_str *= String(Symbol(item)) * " (%),"
-        end
-        println(f, header_str[1:end-1])
+function proflist(list, time = nothing; verbose = true)
+    if verbose
+        @info("Processing profile data")
     end
 
-    return (f, Symbol.(list[2:end]))
+    prof = get_profile_data(list)
+
+    prof1 = prof[1]
+
+    result = Dict{String,Any}("total_time" => time)
+
+    for (name, data) in prof
+        if name != prof1[1]
+            _time = if time === nothing
+                data / prof1[2]
+            else
+                time * data / prof1[2]
+            end
+            result[String(name)] = _time
+        end
+    end
+
+    if verbose
+        @info("Finished processing profile data")
+    end
+
+    return result
 end
 
-function write_profile_data(file, result, time; named = "")
-    f, list = file
+macro proflist(exp, list)
+    val = Meta.quot(exp.args[1])
+    if typeof(val) != Symbol
+        val = Meta.quot(exp.args[1].args[2].value)
+    end
+    return quote
+        list2 = copy($(esc(list)))
+        pushfirst!(list2, $val)
 
-    str = ""
-    if named != ""
-        str *= named * ","
+        Profile.clear()
+
+        time = @elapsed begin
+            Profile.@profile $(esc(exp))
+        end
+
+        ret = proflist(list2, time; verbose = true)
+
+        ret
     end
-    str *= @sprintf("%1.2f", time) * ","
-    for item in list
-        str *= @sprintf("%1.2f", result[item]) * ","
-    end
-    println(f, str[1:end-1])
-    return
 end
 
-function close_profile_file(file)
-    close(file[1])
-    return
+function save_proflist(
+    data;
+    output_filename = "profile.jsonl",
+    label = "_name_",
+)
+    data["name"] = label
+    data["date"] = string(Dates.now())
+    open(output_filename, "a") do io
+        return println(io, JSON.json(data))
+    end
+    return nothing
 end

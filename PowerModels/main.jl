@@ -5,7 +5,7 @@
 
 if isinteractive()
     cd(@__DIR__)
-    using Pkg
+    import Pkg
     Pkg.activate(".")
     ARGS = ["--case=pglib_opf_case162_ieee_dtc.m", "--run", "--profile"]
 end
@@ -17,8 +17,9 @@ import HiGHS
 # julia base
 import SHA
 # profile
-using Profile
-using FlameGraphs
+import Profile
+import FlameGraphs
+import JSON
 
 # helper functions
 include("../utils/utils.jl")
@@ -45,7 +46,8 @@ function print_help()
                       will loop over all valid cases
          * `--help`   print this help message
          * `--run`    if provided, execute the case with `PowerModels.solve_ots`
-         * `--write`  if provided, write mps files
+         * `--write`  if provided, write out files to disk
+         * `--profile` if provided, profile the case and write to `profile.jsonl`
         """,
     )
     return
@@ -63,13 +65,10 @@ function main(args)
     else
         push!(cases, joinpath(@__DIR__, "cases", parsed_args["case"]))
     end
-    list = [:solve_ots, JuMP, HiGHS, :Highs_run]
-    if get(parsed_args, "profile", "false") == "true"
-        profile_file_io = create_profile_file(list; named = "PowerModels")
-    end
     for case in cases
         @info("Running $case")
-        HIGHS_WRITE_FILE_PREFIX[] = "PowerModelsOTS_$(last(splitpath(case)))"
+        model_name = "PowerModelsOTS_$(last(splitpath(case)))"
+        HIGHS_WRITE_FILE_PREFIX[] = model_name
         if !write_files
             HIGHS_WRITE_FILE_PREFIX[] = ""
         end
@@ -80,25 +79,23 @@ function main(args)
             if get(parsed_args, "profile", "false") == "true"
                 # precompile run
                 PowerModels.solve_ots(case, PowerModels.DCPPowerModel, solver)
-                Profile.clear()
-                time = @elapsed @profile PowerModels.solve_ots(
-                    case,
-                    PowerModels.DCPPowerModel,
-                    solver,
-                )
-                write_profile_data(
-                    profile_file_io,
-                    get_profile_data(list),
-                    time;
-                    named = "$(last(splitpath(case)))",
+                data = @proflist PowerModels.solve_ots(case, PowerModels.DCPPowerModel, solver) [
+                    JuMP,
+                    HiGHS,
+                    :Highs_run,
+                ]
+                save_proflist(
+                    data;
+                    output_filename = joinpath(
+                        dirname(@__DIR__),
+                        "profile.jsonl",
+                    ),
+                    label = model_name,
                 )
             else
                 PowerModels.solve_ots(case, PowerModels.DCPPowerModel, solver)
             end
         end
-    end
-    if get(parsed_args, "profile", "false") == "true"
-        close_profile_file(profile_file_io)
     end
     return
 end

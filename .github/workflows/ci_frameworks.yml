@@ -53,3 +53,4 @@ jobs:
           julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --help
           julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --all
           julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --case=${{ matrix.case }} --run --write
+          julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --case=${{ matrix.case }} --run --profile

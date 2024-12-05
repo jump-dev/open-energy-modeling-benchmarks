@@ -7,7 +7,8 @@ if isinteractive()
     cd(@__DIR__)
     using Pkg
     Pkg.activate(".")
-    ARGS = ["--all", "--run", "--write"]
+    # ARGS = ["--all", "--run", "--write"]
+    ARGS = ["--case=matpower/case14/2017-01-01", "--run", "--profile"]
 end
 
 import HiGHS
@@ -17,7 +18,7 @@ import SHA
 import Dates
 
 function print_help()
-    valid_cases = uc_valid_cases()
+    valid_cases = uc_cases()
     print(
         """
         usage: julia --project=UnitCommitment UnitCommitment/main.jl \
@@ -82,7 +83,7 @@ function HiGHS.Highs_run(highs)
     return ccall((:Highs_run, HiGHS.libhighs), Cint, (Ptr{Cvoid},), highs)
 end
 
-function uc_valid_cases()
+function uc_cases()
     return [
         "pglib-uc/ferc/2015-01-01_hw",
         "pglib-uc/ferc/2015-01-01_lw",
@@ -105,7 +106,7 @@ function main(args)
     write_files = get(parsed_args, "write", "false") == "true"
     cases = String[]
     if get(parsed_args, "all", "false") == "true"
-        append!(cases, uc_valid_cases())
+        append!(cases, uc_cases())
     else
         push!(cases, parsed_args["case"])
     end
@@ -127,10 +128,11 @@ function main(args)
                 )
                 # iterative model, so we do no write files
                 HIGHS_WRITE_FILE_PREFIX[] = ""
-                UnitCommitment.optimize!(model,
-                    UnitCommitment.XavQiuWanThi2019.Method(
+                UnitCommitment.optimize!(
+                    model,
+                    UnitCommitment.XavQiuWanThi2019.Method(;
                         time_limit = 600.0,
-                    )
+                    ),
                 )
                 # we only write files for the last model
                 if write_files

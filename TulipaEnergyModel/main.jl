@@ -46,7 +46,7 @@ function print_help()
 
          * `--case`:  the directory in `TulipaEnergyModel/cases` to run. Valid cases are
             * $(join(valid_cases, "\n    * "))
-            * $(join(vec(["$(case)-<ts>" for net in valid_cases]), "\n    * "))
+            * $(join(vec(["$(case)-<ts>" for case in valid_cases]), "\n    * "))
             For <ts> in 1 to 8760 (suggested horizons are $(join(timestep_options(), ", ")))
          * `--all`    if passed, `--case` must not be passed, and the argument
                       will loop over all valid cases

@@ -30,10 +30,10 @@ jobs:
             case: 'PTDF-6-150'
             file: 'tutorial_1.jl'
             os: ubuntu-latest
-          # - framework: 'TulipaEnergyModel'
-          #   case: '1_EU_investment_simple'
-          #   file: 'main.jl'
-          #   os: ubuntu-latest
+          - framework: 'TulipaEnergyModel'
+            case: '1_EU_investment_simple-24'
+            file: 'main.jl'
+            os: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2

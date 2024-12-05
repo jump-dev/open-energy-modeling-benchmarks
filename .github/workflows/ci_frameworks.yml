@@ -35,7 +35,7 @@ jobs:
           #   file: 'main.jl'
           #   os: ubuntu-latest
           - framework: 'UnitCommitment'
-            case: 'matpower/case1888rte/2017-01-01'
+            case: 'matpower/case14/2017-01-01' # small non-default case
             file: 'main.jl'
             os: ubuntu-latest
     steps:

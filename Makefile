@@ -12,6 +12,7 @@ help:
 	@echo "  sienna       write all Sienna instances"
 	@echo "  spineopt     write all SpineOpt instances"
 	@echo "  tulipaenergymodel  write all TulipaEnergyModel instances"
+	@echo "  unitcommitment  write all UnitCommitment instances"
 	@echo "  [HIGHS=X.Y.Z] benchmark  run a new set of benchmarks, optionally with a version of HiGHS"
 	@echo "  analyze      print analysis of output"
 	@echo "  all          re-run all commands"
@@ -31,6 +32,9 @@ spineopt:
 tulipaenergymodel:
 	julia --project=TulipaEnergyModel TulipaEnergyModel/main.jl --all --run --write
 
+unitcommitment:
+	julia --project=UnitCommitment UnitCommitment/main.jl --all --run --write
+
 benchmark:
 	@if [ ${HIGHS} ]; then\
 		echo ${HIGHS};\
@@ -42,6 +46,6 @@ benchmark:
 analyze:
 	julia --project=benchmark benchmark/main.jl --analyze
 
-all: genx powermodels sienna spineopt tulipaenergymodel
+all: genx powermodels sienna spineopt tulipaenergymodel unitcommitment
 
-.PHONY: default help genx powermodels sienna spineopt tulipaenergymodel benchmark analyze
+.PHONY: default help genx powermodels sienna spineopt tulipaenergymodel unitcommitment benchmark analyze

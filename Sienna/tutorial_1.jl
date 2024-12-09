@@ -33,6 +33,10 @@ include("../utils/profile.jl")
 # !!! TYPE PIRACY TO INTERCEPT ALL HIGHS SOLVES AND WRITE THEM TO FILES !!!
 include("../utils/highs_write.jl")
 
+# Non-default profile settings
+# because Sienna hangs with default settings
+Profile.init(n = 10^6, delay = 0.1)
+
 #=
     Command line argument parsing
 =#

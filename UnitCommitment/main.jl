@@ -7,8 +7,6 @@ if isinteractive()
     cd(@__DIR__)
     using Pkg
     Pkg.activate(".")
-    Pkg.add("FlameGraphs")
-    Pkg.add("JSON")
     ARGS = ["--case=matpower/case14/2017-01-01", "--run", "--profile"]
 end
 

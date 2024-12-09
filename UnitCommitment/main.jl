@@ -7,15 +7,23 @@ if isinteractive()
     cd(@__DIR__)
     using Pkg
     Pkg.activate(".")
-    # ARGS = ["--all", "--run", "--write"]
+    Pkg.add("FlameGraphs")
+    Pkg.add("JSON")
     ARGS = ["--case=matpower/case14/2017-01-01", "--run", "--profile"]
 end
 
-import HiGHS
-import JuMP
 import UnitCommitment
-import SHA
+# solver
+import JuMP
+import HiGHS
+# julia base
 import Dates
+import SHA
+import Logging
+# profile
+import Profile
+import FlameGraphs
+import JSON
 
 # helper functions
 include("../utils/utils.jl")
@@ -101,9 +109,9 @@ function main(args)
                 # Read benchmark instance
                 instance = UnitCommitment.read_benchmark(case)
                 if get(parsed_args, "profile", "false") == "true"
-                    build_and_solve(instance; time_limit = 0.01)
+                    build_and_solve(instance; time_limit = 10.01)
                     data =
-                        @proflist build_and_solve(instance; time_limit = 0.01) [
+                        @proflist build_and_solve(instance; time_limit = 10.01) [
                             JuMP,
                             HiGHS,
                             :Highs_run,

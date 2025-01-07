@@ -30,10 +30,10 @@ jobs:
             case: 'PTDF-6-150'
             file: 'tutorial_1.jl'
             os: ubuntu-latest
-          # - framework: 'TulipaEnergyModel'
-          #   case: '1_EU_investment_simple'
-          #   file: 'main.jl'
-          #   os: ubuntu-latest
+          - framework: 'TulipaEnergyModel'
+            case: '1_EU_investment_simple-24'
+            file: 'main.jl'
+            os: ubuntu-latest
           - framework: 'UnitCommitment'
             case: 'matpower/case14/2017-01-01' # small non-default case
             file: 'main.jl'
@@ -57,3 +57,4 @@ jobs:
           julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --help
           julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --all
           julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --case=${{ matrix.case }} --run --write
+          julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --case=${{ matrix.case }} --run --profile

@@ -1,6 +1,10 @@
 [deps]
+FlameGraphs = "08572546-2f56-4bcf-ba4e-bab62c3a3f89"
 GenX = "5d317b1e-30ec-4ed6-a8ce-8d2d88d7cfac"
 HiGHS = "87dc4568-4c63-4d18-b0c0-bb2238e4078b"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
+Profile = "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79"
 SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
 [compat]

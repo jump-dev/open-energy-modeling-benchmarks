@@ -3,9 +3,30 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
+if isinteractive()
+    cd(@__DIR__)
+    import Pkg
+    Pkg.activate(".")
+    ARGS = ["--case=1_three_zones", "--run", "--profile"]
+end
+
 import GenX
 import HiGHS
+# solver
+import JuMP
+import HiGHS
+# julia base
 import SHA
+# profile
+import Profile
+import FlameGraphs
+import JSON
+
+# helper functions
+include("../utils/utils.jl")
+include("../utils/profile.jl")
+# !!! TYPE PIRACY TO INTERCEPT ALL HIGHS SOLVES AND WRITE THEM TO FILES !!!
+include("../utils/highs_write.jl")
 
 function print_help()
     cases = readdir(joinpath(@__DIR__, "cases"); sort = false)
@@ -25,53 +46,11 @@ function print_help()
          * `--all`    if passed, `--case` must not be passed, and the argument
                       will loop over all valid cases
          * `--help`   print this help message
-         * `--run`    if provided, execute the case with `GenX.run_genx_case!`
-         * `--write`  if provided, write out files to
+         * `--write`  if provided, write out files to disk
+         * `--profile` if provided, profile the case and write to `profile.jsonl`
         """,
     )
     return
-end
-
-function _parse_args(args)
-    ret = Dict{String,String}()
-    for arg in args
-        if (m = match(r"--([a-z]+)=(.+?)($|\s)", arg)) !== nothing
-            ret[m[1]] = m[2]
-        elseif (m = match(r"--([a-z]+?)($|\s)", arg)) !== nothing
-            ret[m[1]] = "true"
-        else
-            error("unsupported argument $arg")
-        end
-    end
-    return ret
-end
-
-const HIGHS_WRITE_FILE_PREFIX = Ref{String}("UNNAMED")
-
-function _write_highs_model(highs)
-    prefix = HIGHS_WRITE_FILE_PREFIX[]::String
-    if isempty(prefix)
-        return
-    end
-    instances = joinpath(dirname(@__DIR__), "instances")
-    tmp_filename = joinpath(instances, "tmp.mps")
-    HiGHS.Highs_writeModel(highs, tmp_filename)
-    # We SHA the raw file so that potential gzip differences across
-    # platforms don't matter.
-    hex = bytes2hex(open(SHA.sha256, tmp_filename))
-    run(`gzip $tmp_filename`)
-    mv(
-        "$(tmp_filename).gz",
-        joinpath(instances, "$prefix-$hex.mps.gz");
-        force = true,
-    )
-    return
-end
-
-# !!! TYPE PIRACY TO INTERCEPT ALL HIGHS SOLVES AND WRITE THEM TO FILES !!!
-function HiGHS.Highs_run(highs)
-    _write_highs_model(highs)
-    return ccall((:Highs_run, HiGHS.libhighs), Cint, (Ptr{Cvoid},), highs)
 end
 
 function main(args)
@@ -89,9 +68,31 @@ function main(args)
     for case in cases
         @info("Running $case")
         if get(parsed_args, "run", "false") == "true"
-            HIGHS_WRITE_FILE_PREFIX[] = "GenX_$(last(splitpath(case)))"
+            model_name = "GenX_$(last(splitpath(case)))"
+            HIGHS_WRITE_FILE_PREFIX[] = ""
+            if write_files
+                HIGHS_WRITE_FILE_PREFIX[] = model_name
+            end
             try
-                GenX.run_genx_case!(case)
+                if get(parsed_args, "profile", "false") == "true"
+                    # precompile run
+                    GenX.run_genx_case!(case)
+                    data = @proflist GenX.run_genx_case!(case) [
+                        JuMP,
+                        HiGHS,
+                        :Highs_run,
+                    ]
+                    save_proflist(
+                        data;
+                        output_filename = joinpath(
+                            dirname(@__DIR__),
+                            "profile.jsonl",
+                        ),
+                        label = model_name,
+                    )
+                else
+                    GenX.run_genx_case!(case)
+                end
             catch e
                 # this is necessary for case 6 given we set 500s o time limit
                 println("Error running $case")

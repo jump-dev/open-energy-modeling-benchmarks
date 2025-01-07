@@ -3,17 +3,39 @@
 # Use of this source code is governed by an MIT-style license that can be found
 # in the LICENSE.md file or at https://opensource.org/licenses/MIT.
 
+if isinteractive()
+    cd(@__DIR__)
+    import Pkg
+    Pkg.activate(".")
+    ARGS = ["--case=CopperPlate-12-29", "--run", "--profile"]
+end
+
 # necessary sienna stack
-using PowerSystems
-using PowerSimulations
-using HydroPowerSimulations
-using PowerSystemCaseBuilder
+import PowerSystems
+import PowerSimulations
+import HydroPowerSimulations
+import PowerSystemCaseBuilder
 # solver
-using HiGHS
+import JuMP
+import HiGHS
 # julia base
-using Dates
-using SHA
-using Logging
+import Dates
+import SHA
+import Logging
+# profile
+import Profile
+import FlameGraphs
+import JSON
+
+# helper functions
+include("../utils/utils.jl")
+include("../utils/profile.jl")
+# !!! TYPE PIRACY TO INTERCEPT ALL HIGHS SOLVES AND WRITE THEM TO FILES !!!
+include("../utils/highs_write.jl")
+
+# Non-default profile settings
+# because Sienna hangs with default settings
+Profile.init(; n = 10^6, delay = 0.1)
 
 #=
     Command line argument parsing
@@ -39,56 +61,11 @@ function print_help()
                       days and horizons.
          * `--help`   print this help message
          * `--run`    if provided, execute the case
-         * `--write`  if provided, write out files to
+         * `--write`  if provided, write out files to disk
+         * `--profile` if provided, profile the case and write to `profile.jsonl`
         """,
     )
     return
-end
-
-function _parse_args(args)
-    ret = Dict{String,String}()
-    for arg in args
-        if (m = match(r"--([a-z]+)=(.+?)($|\s)", arg)) !== nothing
-            ret[m[1]] = m[2]
-        elseif (m = match(r"--([a-z]+?)($|\s)", arg)) !== nothing
-            ret[m[1]] = "true"
-        else
-            error("unsupported argument $arg")
-        end
-    end
-    return ret
-end
-
-#=
-    HiGHS overloads to print models to files
-=#
-
-const HIGHS_WRITE_FILE_PREFIX = Ref{String}("")
-
-function _write_highs_model(highs)
-    prefix = HIGHS_WRITE_FILE_PREFIX[]::String
-    if isempty(prefix)
-        return
-    end
-    instances = joinpath(dirname(@__DIR__), "instances")
-    tmp_filename = joinpath(instances, "tmp.mps")
-    HiGHS.Highs_writeModel(highs, tmp_filename)
-    # We SHA the raw file so that potential gzip differences across
-    # platforms don't matter.
-    hex = bytes2hex(open(SHA.sha256, tmp_filename))
-    run(`gzip $tmp_filename`)
-    mv(
-        "$(tmp_filename).gz",
-        joinpath(instances, "$prefix-$hex.mps.gz");
-        force = true,
-    )
-    return
-end
-
-# !!! TYPE PIRACY TO INTERCEPT ALL HIGHS SOLVES AND WRITE THEM TO FILES !!!
-function HiGHS.Highs_run(highs)
-    _write_highs_model(highs)
-    return ccall((:Highs_run, HiGHS.libhighs), Cint, (Ptr{Cvoid},), highs)
 end
 
 # selected from:
@@ -98,6 +75,21 @@ days_options() = sort([332, 29, 314])
 horizon_options() = [12, 24, 48]
 
 network_options() = ["CopperPlate", "PTDF", "DC", "Transport"]
+
+function build_and_solve(problem)
+    file_name = HIGHS_WRITE_FILE_PREFIX[]
+    # skip the first file print
+    HIGHS_WRITE_FILE_PREFIX[] = ""
+    PowerSimulations.build!(
+        problem;
+        output_dir = mktempdir(),
+        console_level = Logging.Info,
+    )
+    # write the file
+    HIGHS_WRITE_FILE_PREFIX[] = file_name
+    PowerSimulations.solve!(problem; console_level = Logging.Info)
+    return
+end
 
 #=
     Main Sienna loop to optimize a decision model
@@ -111,43 +103,89 @@ function main(args)
     write_files = get(parsed_args, "write", "false") == "true"
 
     # case data is downloaded from a julia artifcat
-    sys = build_system(PSISystems, "modified_RTS_GMLC_DA_sys")
-
-    template_uc = ProblemTemplate()
-
-    set_device_model!(template_uc, Line, StaticBranch)
-    set_device_model!(template_uc, Transformer2W, StaticBranch)
-    set_device_model!(template_uc, TapTransformer, StaticBranch)
-
-    set_device_model!(
-        template_uc,
-        ThermalStandard,
-        ThermalStandardUnitCommitment,
+    sys = PowerSystemCaseBuilder.build_system(
+        PowerSystemCaseBuilder.PSISystems,
+        "modified_RTS_GMLC_DA_sys",
     )
-    set_device_model!(template_uc, RenewableDispatch, RenewableFullDispatch)
-    set_device_model!(template_uc, PowerLoad, StaticPowerLoad)
-    set_device_model!(template_uc, HydroDispatch, HydroDispatchRunOfRiver)
-    set_device_model!(template_uc, RenewableNonDispatch, FixedOutput)
 
-    set_service_model!(template_uc, VariableReserve{ReserveUp}, RangeReserve)
-    set_service_model!(template_uc, VariableReserve{ReserveDown}, RangeReserve)
+    template_uc = PowerSimulations.ProblemTemplate()
+
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.Line,
+        PowerSimulations.StaticBranch,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.Transformer2W,
+        PowerSimulations.StaticBranch,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.TapTransformer,
+        PowerSimulations.StaticBranch,
+    )
+
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.ThermalStandard,
+        PowerSimulations.ThermalStandardUnitCommitment,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.RenewableDispatch,
+        PowerSimulations.RenewableFullDispatch,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.PowerLoad,
+        PowerSimulations.StaticPowerLoad,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.HydroDispatch,
+        HydroPowerSimulations.HydroDispatchRunOfRiver,
+    )
+    PowerSimulations.set_device_model!(
+        template_uc,
+        PowerSystems.RenewableNonDispatch,
+        PowerSimulations.FixedOutput,
+    )
+
+    PowerSimulations.set_service_model!(
+        template_uc,
+        PowerSystems.VariableReserve{PowerSystems.ReserveUp},
+        PowerSimulations.RangeReserve,
+    )
+    PowerSimulations.set_service_model!(
+        template_uc,
+        PowerSystems.VariableReserve{PowerSystems.ReserveDown},
+        PowerSimulations.RangeReserve,
+    )
 
     # hard to solve configuration (0.01% gap)
     # solver = optimizer_with_attributes(HiGHS.Optimizer, "mip_rel_gap" => 0.0001)
     # easy configuration so that it is easy to print (50% gap)
-    solver = optimizer_with_attributes(HiGHS.Optimizer, "mip_rel_gap" => 0.5)
+    solver = JuMP.optimizer_with_attributes(
+        HiGHS.Optimizer,
+        "mip_rel_gap" => 0.5,
+        # "time_limit" => 0.1,
+    )
 
     net_models = Dict(
-        "CopperPlate" => CopperPlatePowerModel,
-        "PTDF" => PTDFPowerModel,
-        "DC" => DCPPowerModel,
-        "Transport" => NFAPowerModel,
+        "CopperPlate" => PowerSimulations.CopperPlatePowerModel,
+        "PTDF" => PowerSimulations.PTDFPowerModel,
+        "DC" => PowerSimulations.DCPPowerModel,
+        "Transport" => PowerSimulations.NFAPowerModel,
     )
 
     parsed_args_all = get(parsed_args, "all", "false")
 
     for net_name in network_options()
-        set_network_model!(template_uc, NetworkModel(net_models[net_name]))
+        PowerSimulations.set_network_model!(
+            template_uc,
+            PowerSimulations.NetworkModel(net_models[net_name]),
+        )
         for h in 1:48, day in 1:365
             if parsed_args_all == "true"
                 if day in days_options() && h in horizon_options()
@@ -158,9 +196,6 @@ function main(args)
             elseif haskey(parsed_args, "case") &&
                    "$(net_name)-$(h)-$(day)" != parsed_args["case"]
                 continue
-            else
-                @info("No case selected")
-                return
             end
 
             @info("Running $net_name with $h hours for day $day")
@@ -169,33 +204,42 @@ function main(args)
                 continue
             end
 
-            problem = DecisionModel(
+            model_name = "Sienna_modified_RTS_GMLC_DA_sys_Net$(net_name)_Horizon$(h)_Day$day"
+
+            HIGHS_WRITE_FILE_PREFIX[] = ""
+            if write_files
+                HIGHS_WRITE_FILE_PREFIX[] = model_name
+            end
+
+            problem = PowerSimulations.DecisionModel(
                 template_uc,
                 sys;
                 optimizer = solver,
-                horizon = Hour(h),
-                initial_time = DateTime("2020-01-01T00:00:00") +
-                               Hour((day - 1) * 24),
+                horizon = Dates.Hour(h),
+                initial_time = Dates.DateTime("2020-01-01T00:00:00") +
+                               Dates.Hour((day - 1) * 24),
                 optimizer_solve_log_print = true,
             )
 
-            # this build step also optimizes a model for initial conditions
-            # we skip this print step
-            HIGHS_WRITE_FILE_PREFIX[] = ""
-            build!(
-                problem;
-                output_dir = mktempdir(),
-                console_level = Logging.Info,
-            )
-
-            # the solve step optimizes the main model
-            HIGHS_WRITE_FILE_PREFIX[] = "Sienna_modified_RTS_GMLC_DA_sys_Net$(net_name)_Horizon$(h)_Day$day"
-            if !write_files
-                HIGHS_WRITE_FILE_PREFIX[] = ""
+            if get(parsed_args, "profile", "false") == "true"
+                # precompile run
+                build_and_solve(problem)
+                data =
+                    @proflist build_and_solve(problem) [JuMP, HiGHS, :Highs_run]
+                save_proflist(
+                    data;
+                    output_filename = joinpath(
+                        dirname(@__DIR__),
+                        "profile.jsonl",
+                    ),
+                    label = model_name,
+                )
+            else
+                build_and_solve(problem)
             end
-            solve!(problem; console_level = Logging.Info)
         end
     end
+
     return
 end
 

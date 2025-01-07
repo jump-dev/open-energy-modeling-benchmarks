@@ -41,3 +41,10 @@ which is necessary to use [`spinedb_api`](https://pypi.org/project/spinedb-api/)
 * Linux: `apt install libpq-dev`
 * Mac: `brew install postgresql` or `sudo port install postgresql`
 * Windows: use the installer https://www.postgresql.org/download/windows/
+
+## Warning
+
+SpineOpt instances are non-deterministic. Every different run of the `main.jl`
+script leads to a new mps files. From a first pass on the files its seem that
+the only change is the order of the constraints. However, this apparently simple
+change can lead to different solve times and *very* different solutions.

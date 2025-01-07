@@ -30,6 +30,10 @@ jobs:
             case: 'PTDF-6-150'
             file: 'tutorial_1.jl'
             os: ubuntu-latest
+          # - framework: 'SpineOpt'
+          #   case: '1_electrolyzer_with_rolling_horizon.json'
+          #   file: 'main.jl'
+          #   os: ubuntu-latest
           - framework: 'TulipaEnergyModel'
             case: '1_EU_investment_simple-24'
             file: 'main.jl'

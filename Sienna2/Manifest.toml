@@ -1001,7 +1001,7 @@ version = "0.11.1"
 
 [[deps.PowerSimulations]]
 deps = ["CSV", "DataFrames", "DataStructures", "Dates", "Distributed", "DocStringExtensions", "HDF5", "InfrastructureSystems", "InteractiveUtils", "JSON3", "JuMP", "LinearAlgebra", "Logging", "MathOptInterface", "PowerModels", "PowerNetworkMatrices", "PowerSystems", "PrettyTables", "ProgressMeter", "Serialization", "TimeSeries", "TimerOutputs"]
-path = "/Users/joaquimdiasgarcia/.julia/dev/PowerSimulations"
+git-tree-sha1 = "2f06d07d832031e64c5d333590000b9e49661ad2"
 uuid = "e690365d-45e2-57bb-ac84-44ba829e73c4"
 version = "0.29.2"
 

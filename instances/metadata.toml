@@ -1,0 +1,698 @@
+[[instance]]
+name = "GenX_1_three_zones-2b66b543f23170441438f4d10acfb436136aef55ebcc483d502c5493a62d163c.mps.gz"
+source_model = "GenX"
+case_name = "1_three_zones"
+hash = "2b66b543f23170441438f4d10acfb436136aef55ebcc483d502c5493a62d163c"
+integer_features = ["unit-commitment"]
+time_steps = 8760 # review: TimeDomainReduction: 1
+system_nodes = 3
+problem_type = "expansion-planning" # review
+
+[[instance]]
+name = "GenX_2_three_zones_w_electrolyzer-f211ccdcc1a2145c1f4854dcc714f50d5b8fcc524bac465a2022ffb8942ffd53.mps.gz"
+source_model = "GenX"
+case_name = "2_three_zones_w_electrolyzer"
+hash = "f211ccdcc1a2145c1f4854dcc714f50d5b8fcc524bac465a2022ffb8942ffd53"
+integer_features = ["unit-commitment"]
+time_steps = 8760 # review: TimeDomainReduction: 1
+system_nodes = 3
+problem_type = "expansion-planning" # review
+
+[[instance]]
+name = "GenX_3_three_zones_w_co2_capture-3222908514bd19ae55895811eb847ad882270e280657123420407a885ccb34bc.mps.gz"
+source_model = "GenX"
+case_name = "3_three_zones_w_co2_capture"
+hash = "3222908514bd19ae55895811eb847ad882270e280657123420407a885ccb34bc"
+integer_features = ["unit-commitment"]
+time_steps = 8760 # review: TimeDomainReduction: 1
+system_nodes = 3
+problem_type = "expansion-planning" # review
+
+[[instance]]
+name = "GenX_4_three_zones_w_policies_slack-0be00acbe74d795dfc6aec53239998a93ac0310563b3e65fca00f2acebe2b6c1.mps.gz"
+source_model = "GenX"
+case_name = "4_three_zones_w_policies_slack"
+hash = "0be00acbe74d795dfc6aec53239998a93ac0310563b3e65fca00f2acebe2b6c1"
+integer_features = ["unit-commitment"]
+time_steps = 8760 # review: TimeDomainReduction: 1
+system_nodes = 3
+problem_type = "expansion-planning" # review
+
+[[instance]]
+name = "GenX_5_three_zones_w_piecewise_fuel-51ff0e52d559b549f9e45a13eb267156a2416566f126d1567e1846353a4e9936.mps.gz"
+source_model = "GenX"
+case_name = "5_three_zones_w_piecewise_fuel"
+hash = "51ff0e52d559b549f9e45a13eb267156a2416566f126d1567e1846353a4e9936"
+integer_features = ["unit-commitment"]
+time_steps = 8760 # review: TimeDomainReduction: 1
+system_nodes = 3
+problem_type = "expansion-planning" # review
+
+[[instance]]
+name = "GenX_6_three_zones_w_multistage-62d4538e93e8e775de4f754baf121d4996da332da11066a1a496e298f2319641.mps.gz"
+source_model = "GenX"
+case_name = "6_three_zones_w_multistage"
+hash = "62d4538e93e8e775de4f754baf121d4996da332da11066a1a496e298f2319641"
+integer_features = ["unit-commitment"]
+time_steps = 8760 # review: TimeDomainReduction: 1
+system_nodes = 3
+problem_type = "expansion-planning" # review
+
+[[instance]]
+name = "GenX_7_three_zones_w_colocated_VRE_storage-053eaf1f441d6cb6da75f0dfdaab95f8011afb3be0a34e3b0ae02dbd1043ee74.mps.gz"
+source_model = "GenX"
+case_name = "7_three_zones_w_colocated_VRE_storage"
+hash = "053eaf1f441d6cb6da75f0dfdaab95f8011afb3be0a34e3b0ae02dbd1043ee74"
+integer_features = ["unit-commitment"]
+time_steps = 8760 # review: TimeDomainReduction: 1
+system_nodes = 3
+problem_type = "expansion-planning" # review
+
+[[instance]]
+name = "GenX_8_three_zones_w_colocated_VRE_storage_electrolyzers-5a9e9622b0df9ff8e06923ccddd72047e156022ae36bd98981ac89bfb0f83790.mps.gz"
+source_model = "GenX"
+case_name = "8_three_zones_w_colocated_VRE_storage_electrolyzers"
+hash = "5a9e9622b0df9ff8e06923ccddd72047e156022ae36bd98981ac89bfb0f83790"
+integer_features = ["unit-commitment"]
+time_steps = 8760 # review: TimeDomainReduction: 1
+system_nodes = 3
+problem_type = "expansion-planning" # review
+
+[[instance]]
+name = "GenX_9_three_zones_w_retrofit-8a89ca27ab8836ba9d561011fa6f8daa1481d8ff6509e371ce48f1357a3fdf47.mps.gz"
+source_model = "GenX"
+case_name = "9_three_zones_w_retrofit"
+hash = "8a89ca27ab8836ba9d561011fa6f8daa1481d8ff6509e371ce48f1357a3fdf47"
+integer_features = ["unit-commitment"]
+time_steps = 8760 # review: TimeDomainReduction: 1
+system_nodes = 3
+problem_type = "expansion-planning" # review
+
+[[instance]]
+name = "GenX_10_IEEE_9_bus_DC_OPF-79dee0225f3120ff0403a4b59238ede01562914e4dbf068d832e5d960e3afc40.mps.gz"
+source_model = "GenX"
+case_name = "10_IEEE_9_bus_DC_OPF"
+hash = "79dee0225f3120ff0403a4b59238ede01562914e4dbf068d832e5d960e3afc40"
+integer_features = ["unit-commitment"]
+time_steps = 8760 # review: TimeDomainReduction: 1
+system_nodes = 9
+problem_type = "expansion-planning" # review
+
+[[instance]]
+name = "PowerModelsOTS_pglib_opf_case162_ieee_dtc.m-e44d1cc9578fe03e1568c393ab3924265857b7a2383e6384df4df1a820185c73.mps.gz"
+source_model = "PowerModels"
+case_name = "pglib_opf_case162_ieee_dtc"
+hash = "e44d1cc9578fe03e1568c393ab3924265857b7a2383e6384df4df1a820185c73"
+integer_features = ["transmission-switching"]
+time_steps = 1
+system_nodes = 162
+problem_type = "optimal-transmission-switching"
+
+[[instance]]
+name = "PowerModelsOTS_pglib_opf_case1803_snem.m-43f8f35813a79b40f197737028098bf5eac73ef2776f3aa2687576ad1d439541.mps.gz"
+source_model = "PowerModels"
+case_name = "pglib_opf_case1803_snem"
+hash = "43f8f35813a79b40f197737028098bf5eac73ef2776f3aa2687576ad1d439541"
+integer_features = ["transmission-switching"]
+time_steps = 1
+system_nodes = 1803
+problem_type = "optimal-transmission-switching"
+
+[[instance]]
+name = "PowerModelsOTS_pglib_opf_case1951_rte.m-96db1a2bb31ca33d4fe3ccb1fa30358f157cd3493cff87ae8f16fa8a6a3b1e48.mps.gz"
+source_model = "PowerModels"
+case_name = "pglib_opf_case1951_rte"
+hash = "96db1a2bb31ca33d4fe3ccb1fa30358f157cd3493cff87ae8f16fa8a6a3b1e48"
+integer_features = ["transmission-switching"]
+time_steps = 1
+system_nodes = 1951
+problem_type = "optimal-transmission-switching"
+
+[[instance]]
+name = "PowerModelsOTS_pglib_opf_case2848_rte.m-8546f681e53f8663080268242343f948670d9ddcd40ed4b2da6ab94ec1e0fc05.mps.gz"
+source_model = "PowerModels"
+case_name = "pglib_opf_case2848_rte"
+hash = "8546f681e53f8663080268242343f948670d9ddcd40ed4b2da6ab94ec1e0fc05"
+integer_features = ["transmission-switching"]
+time_steps = 1
+system_nodes = 2848
+problem_type = "optimal-transmission-switching"
+
+[[instance]]
+name = "PowerModelsOTS_pglib_opf_case2868_rte.m-bf313f2631231ef9a5301580b317b461c49901a503fd898ee35cf791f1d8bea6.mps.gz"
+source_model = "PowerModels"
+case_name = "pglib_opf_case2868_rte"
+hash = "bf313f2631231ef9a5301580b317b461c49901a503fd898ee35cf791f1d8bea6"
+integer_features = ["transmission-switching"]
+time_steps = 1
+system_nodes = 2868
+problem_type = "optimal-transmission-switching"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon12_Day29-082507660a1ec655fed92d2b6d49a1d606f029e30cb0dfcd4915f8b8ce896f2e.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon12_Day29"
+hash = "082507660a1ec655fed92d2b6d49a1d606f029e30cb0dfcd4915f8b8ce896f2e"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon12_Day314-16130d073126ae057331ac06d84b99ec39ec673d90e6905b97d4a63326b48708.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon12_Day314"
+hash = "16130d073126ae057331ac06d84b99ec39ec673d90e6905b97d4a63326b48708"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon12_Day332-3bf569a3c3108f4dde780873e6eabe9461cb9432af281c716efacfbad4837ba1.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon12_Day332"
+hash = "3bf569a3c3108f4dde780873e6eabe9461cb9432af281c716efacfbad4837ba1"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day29-fc330569fd9116b60a77ce31693e7b88ae4137cb463d769b9e21adf49c1eb6f1.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day29"
+hash = "fc330569fd9116b60a77ce31693e7b88ae4137cb463d769b9e21adf49c1eb6f1"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day314-a9522cdcf8178254104ce7ca6f4fff4e2554e5844cb8b92a338635cdf211ef2a.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day314"
+hash = "a9522cdcf8178254104ce7ca6f4fff4e2554e5844cb8b92a338635cdf211ef2a"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day332-35f61df3d7e00db245b09ef67b21ea954c6bbff05511cb1702cd419bd7fd2711.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day332"
+hash = "35f61df3d7e00db245b09ef67b21ea954c6bbff05511cb1702cd419bd7fd2711"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day332-35f61df3d7e00db245b09ef67b21ea954c6bbff05511cb1702cd419bd7fd2711.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day332"
+hash = "35f61df3d7e00db245b09ef67b21ea954c6bbff05511cb1702cd419bd7fd2711"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon48_Day29-bc96d26484b652f0ec372e43ddf2b30aa8af03386a3a5d7ee65200d1dc97e4b0.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon48_Day29"
+hash = "bc96d26484b652f0ec372e43ddf2b30aa8af03386a3a5d7ee65200d1dc97e4b0"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon48_Day314-2b77a5de6b6f96cfa72c7ec7940a1f701ee898ee8014816b7dc644baff15a89c.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon48_Day314"
+hash = "2b77a5de6b6f96cfa72c7ec7940a1f701ee898ee8014816b7dc644baff15a89c"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon48_Day332-1a6c28ae9bd6ab741441e47b9ec4ceddbbeb31eea0e243dddcea414d84171583.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon48_Day332"
+hash = "1a6c28ae9bd6ab741441e47b9ec4ceddbbeb31eea0e243dddcea414d84171583"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetDC_Horizon12_Day29-0b223b43ed886810bf678ef53e6242e07e1528daff59505cb15567625fb866f2.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetDC_Horizon12_Day29"
+hash = "0b223b43ed886810bf678ef53e6242e07e1528daff59505cb15567625fb866f2"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetDC_Horizon12_Day314-11b79112e8b2da7a756189e831d00d40b9bf05069c6b59183e7d88fa28da392a.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetDC_Horizon12_Day314"
+hash = "11b79112e8b2da7a756189e831d00d40b9bf05069c6b59183e7d88fa28da392a"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetDC_Horizon12_Day332-1079c962fa915ebe34bf2be8be82c6aed03bccea348410a8dc5f5d83a4a3dff1.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetDC_Horizon12_Day332"
+hash = "1079c962fa915ebe34bf2be8be82c6aed03bccea348410a8dc5f5d83a4a3dff1"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetDC_Horizon24_Day29-12a9e8c3e475aa02d68692347b1fbed9f4769d3b89c3d5f803ebcf8e06d05197.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetDC_Horizon24_Day29"
+hash = "12a9e8c3e475aa02d68692347b1fbed9f4769d3b89c3d5f803ebcf8e06d05197"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetDC_Horizon24_Day314-a50a463915826563a3430374d34d27cf5cc7e7e8d4fce55b2371e6c12b261455.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetDC_Horizon24_Day314"
+hash = "a50a463915826563a3430374d34d27cf5cc7e7e8d4fce55b2371e6c12b261455"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetDC_Horizon24_Day332-2afa1ade7ab1d59c4ca58bc59ba2c50538c809c3951a7961f8f68a489bdee719.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetDC_Horizon24_Day332"
+hash = "2afa1ade7ab1d59c4ca58bc59ba2c50538c809c3951a7961f8f68a489bdee719"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetDC_Horizon48_Day29-dbf0e850812c48d60a10754b5a57f6ccc4fea126abd3fba4e32d68277501ca80.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetDC_Horizon48_Day29"
+hash = "dbf0e850812c48d60a10754b5a57f6ccc4fea126abd3fba4e32d68277501ca80"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetDC_Horizon48_Day314-534efa06a79fce256e898897b9f5fbeaab4294bdbf86b2650961ed940effb1a2.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetDC_Horizon48_Day314"
+hash = "534efa06a79fce256e898897b9f5fbeaab4294bdbf86b2650961ed940effb1a2"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetDC_Horizon48_Day332-a4c0a55a6159313ab87daae5e03fb8a9faca21d44bc6bd4ed085d46357eec3a7.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetDC_Horizon48_Day332"
+hash = "a4c0a55a6159313ab87daae5e03fb8a9faca21d44bc6bd4ed085d46357eec3a7"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetPTDF_Horizon12_Day29-584e340fc9e79c75e07daa790d8b956d159a81187e25c077b3d5666039d25e75.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetPTDF_Horizon12_Day29"
+hash = "584e340fc9e79c75e07daa790d8b956d159a81187e25c077b3d5666039d25e75"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetPTDF_Horizon12_Day314-4ea0f31269b786b7a96c59cf7ae7a7a6b782a96461ba9a05ca24091afa77b303.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetPTDF_Horizon12_Day314"
+hash = "4ea0f31269b786b7a96c59cf7ae7a7a6b782a96461ba9a05ca24091afa77b303"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetPTDF_Horizon12_Day332-94334977dd58464a000d3aa3515f45dce7afc672326d685df3a58b702508af0a.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetPTDF_Horizon12_Day332"
+hash = "94334977dd58464a000d3aa3515f45dce7afc672326d685df3a58b702508af0a"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetPTDF_Horizon24_Day29-273c75c90ebdad62f763619da32a0e44b6456f076aeff7345e8603659a19b3ee.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetPTDF_Horizon24_Day29"
+hash = "273c75c90ebdad62f763619da32a0e44b6456f076aeff7345e8603659a19b3ee"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetPTDF_Horizon24_Day314-11aaca595a3ad6a8619f2e510a9fbcf9169b22449c76dd46776df829ab9aba64.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetPTDF_Horizon24_Day314"
+hash = "11aaca595a3ad6a8619f2e510a9fbcf9169b22449c76dd46776df829ab9aba64"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetPTDF_Horizon24_Day332-15df931033d1a5a3f0133bd141798d3b02c4211befb6f25c19e8218797a05447.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetPTDF_Horizon24_Day332"
+hash = "15df931033d1a5a3f0133bd141798d3b02c4211befb6f25c19e8218797a05447"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetPTDF_Horizon48_Day29-8cabe382d8293ca2c795321015d05603b54f9dbf2dbcfff3e9116c367bd42eac.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetPTDF_Horizon48_Day29"
+hash = "8cabe382d8293ca2c795321015d05603b54f9dbf2dbcfff3e9116c367bd42eac"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetPTDF_Horizon48_Day314-7fa7bf7b284cfc8f93c2541d159617c4964c40daf64cff299f083ba81c25b5ad.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetPTDF_Horizon48_Day314"
+hash = "7fa7bf7b284cfc8f93c2541d159617c4964c40daf64cff299f083ba81c25b5ad"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetPTDF_Horizon48_Day332-864c7b757abad07ecb724ec46ef134aedc73ae5d286ce16129a9c913dd9a0975.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetPTDF_Horizon48_Day332"
+hash = "864c7b757abad07ecb724ec46ef134aedc73ae5d286ce16129a9c913dd9a0975"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetTransport_Horizon12_Day29-4c0d0a8855ccd93b4831a532eedc3d0dc9f33df77c1e98cf81e9834713337b60.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetTransport_Horizon12_Day29"
+hash = "4c0d0a8855ccd93b4831a532eedc3d0dc9f33df77c1e98cf81e9834713337b60"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetTransport_Horizon12_Day314-0bb1986753999d5831bc4345e6ce53f547ea0849b129fd761809e36d4a9906b4.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetTransport_Horizon12_Day314"
+hash = "0bb1986753999d5831bc4345e6ce53f547ea0849b129fd761809e36d4a9906b4"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetTransport_Horizon12_Day332-9329d35ea14edb840379be5519aa15021d5cfdbedec342326b9165ca6f0abc05.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetTransport_Horizon12_Day332"
+hash = "9329d35ea14edb840379be5519aa15021d5cfdbedec342326b9165ca6f0abc05"
+integer_features = ["unit-commitment"]
+time_steps = 12
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetTransport_Horizon24_Day29-66258a0e8497e1e17a702b769ebc9c4dcb1ef285993d4f1f41d9dda59878c5cc.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetTransport_Horizon24_Day29"
+hash = "66258a0e8497e1e17a702b769ebc9c4dcb1ef285993d4f1f41d9dda59878c5cc"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetTransport_Horizon24_Day314-868ad371df2ae99f1427c0d6f5d6af4f1c520d51224598e1dc085b0736df5955.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetTransport_Horizon24_Day314"
+hash = "868ad371df2ae99f1427c0d6f5d6af4f1c520d51224598e1dc085b0736df5955"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetTransport_Horizon24_Day332-b8b4fb5c2c4b0a5f18333028c8d9a7de9d11a5607bb8b660b73cd8a2f617d26a.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetTransport_Horizon24_Day332"
+hash = "b8b4fb5c2c4b0a5f18333028c8d9a7de9d11a5607bb8b660b73cd8a2f617d26a"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetTransport_Horizon48_Day29-baddda2ca9ed73b7a9935f88b30a217e31cfa48670e659a44d07142f65039029.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetTransport_Horizon48_Day29"
+hash = "baddda2ca9ed73b7a9935f88b30a217e31cfa48670e659a44d07142f65039029"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetTransport_Horizon48_Day314-ec745b9b237a474e1ed2a2ef455cba4c7cc926d59742ae1fd4930415cc1a46d4.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetTransport_Horizon48_Day314"
+hash = "ec745b9b237a474e1ed2a2ef455cba4c7cc926d59742ae1fd4930415cc1a46d4"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "Sienna_modified_RTS_GMLC_DA_sys_NetTransport_Horizon48_Day332-c5f9c340dae227b689ac284a47d285373a0cd023658a17e9e56bc68136fad3de.mps.gz"
+source_model = "Sienna"
+case_name = "modified_RTS_GMLC_DA_sys_NetTransport_Horizon48_Day332"
+hash = "c5f9c340dae227b689ac284a47d285373a0cd023658a17e9e56bc68136fad3de"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 73
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "SpineOpt_1_electrolyzer_with_rolling_horizon.json-70fb7507bb16b4ea8e589a0890dc8bee3b8d3ca8acebede5e8592e693b22a646.mps.gz"
+source_model = "SpineOpt"
+case_name = "1_electrolyzer_with_rolling_horizon.json"
+hash = "70fb7507bb16b4ea8e589a0890dc8bee3b8d3ca8acebede5e8592e693b22a646"
+integer_features = ["other"] # review: reactor?
+time_steps = 24
+system_nodes = 1 # one "power" node
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "TulipaEnergyModel_1_EU_investment_simple_24h-dc195d31e02ab753b5f047a4e754d2d387b59e15ac813c515b7fab21651779ea.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "1_EU_investment_simple_24h"
+hash = "dc195d31e02ab753b5f047a4e754d2d387b59e15ac813c515b7fab21651779ea"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 1
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_1_EU_investment_simple_24h-dc195d31e02ab753b5f047a4e754d2d387b59e15ac813c515b7fab21651779ea.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "1_EU_investment_simple_24h"
+hash = "dc195d31e02ab753b5f047a4e754d2d387b59e15ac813c515b7fab21651779ea"
+integer_features = ["unit-commitment"]
+time_steps = 24
+system_nodes = 1
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_1_EU_investment_simple_168h-a213cb9c037b9b9e0d0d38a1b7644a46407203a1f8e5f036c9e39870270c4a4f.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "1_EU_investment_simple_168h"
+hash = "a213cb9c037b9b9e0d0d38a1b7644a46407203a1f8e5f036c9e39870270c4a4f"
+integer_features = ["unit-commitment"]
+time_steps = 168
+system_nodes = 1
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_1_EU_investment_simple_672h-336e9a77dd9deae1ef81069c4e3f0c4c39cbbe0bc24b4d4e3f666657cbc76ab6.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "1_EU_investment_simple_672h"
+hash = "336e9a77dd9deae1ef81069c4e3f0c4c39cbbe0bc24b4d4e3f666657cbc76ab6"
+integer_features = ["unit-commitment"]
+time_steps = 672
+system_nodes = 1
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_1_EU_investment_simple_2016h-6f7e83e8d3d3d676153925691417a73265d784e70f52b3f70eaa9664921dcd85.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "1_EU_investment_simple_2016h"
+hash = "6f7e83e8d3d3d676153925691417a73265d784e70f52b3f70eaa9664921dcd85"
+integer_features = ["unit-commitment"]
+time_steps = 2016
+system_nodes = 1
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_1_EU_investment_simple_4032h-76d00dd60487dc27e60808bb6421b3091a937cfa503e37de4ef6927757f8ec11.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "1_EU_investment_simple_4032h"
+hash = "76d00dd60487dc27e60808bb6421b3091a937cfa503e37de4ef6927757f8ec11"
+integer_features = ["unit-commitment"]
+time_steps = 4032
+system_nodes = 1
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_1_EU_investment_simple_8760h-beb8fc0072ed50c7bf40d264ffb87ba24de4ae6736d55a7c0a78209f2c5883ef.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "1_EU_investment_simple_8760h"
+hash = "beb8fc0072ed50c7bf40d264ffb87ba24de4ae6736d55a7c0a78209f2c5883ef"
+integer_features = ["unit-commitment"]
+time_steps = 8760
+system_nodes = 1
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "UnitCommitment_matpower_case1888rte_2017-01-01-7226641602042c80f68031bfc3bfb0e943b6f46f13a5b573a3645cd023da3b6a.mps.gz"
+source_model = "UnitCommitment"
+case_name = "matpower_case1888rte_2017-01-01"
+hash = "7226641602042c80f68031bfc3bfb0e943b6f46f13a5b573a3645cd023da3b6a"
+integer_features = ["unit-commitment"]
+time_steps = 36
+system_nodes = 1888 # 1826?
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "UnitCommitment_matpower_case1951rte_2017-01-01-d99e10b20daae851b4f56a5ab8395be070c95fb06d8f60198cf7f15e13b94116.mps.gz"
+source_model = "UnitCommitment"
+case_name = "matpower_case1951rte_2017-01-01"
+hash = "d99e10b20daae851b4f56a5ab8395be070c95fb06d8f60198cf7f15e13b94116"
+integer_features = ["unit-commitment"]
+time_steps = 36
+system_nodes = 1951 # 1826?
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "UnitCommitment_matpower_case2848rte_2017-01-01-de0fcd5193380236d8a3090ddba84b93b1b6cc494f168c01303fdc8e5d92eff4.mps.gz"
+source_model = "UnitCommitment"
+case_name = "matpower_case2848rte_2017-01-01"
+hash = "de0fcd5193380236d8a3090ddba84b93b1b6cc494f168c01303fdc8e5d92eff4"
+integer_features = ["unit-commitment"]
+time_steps = 36
+system_nodes = 2848 # 2570?
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "UnitCommitment_matpower_case3012wp_2017-01-01-602f58b947c273751c415c4941b53935b40c17dc6a3052a7ec86b04a3febc977.mps.gz"
+source_model = "UnitCommitment"
+case_name = "matpower_case3012wp_2017-01-01"
+hash = "602f58b947c273751c415c4941b53935b40c17dc6a3052a7ec86b04a3febc977"
+integer_features = ["unit-commitment"]
+time_steps = 36
+system_nodes = 3012 # 3013?
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "UnitCommitment_matpower_case6468rte_2017-01-01-6347ecf6d9d8713d0251807aea9e5419eabbf1dfb717f70b7612f58ffd69b913.mps.gz"
+source_model = "UnitCommitment"
+case_name = "matpower_case6468rte_2017-01-01"
+hash = "6347ecf6d9d8713d0251807aea9e5419eabbf1dfb717f70b7612f58ffd69b913"
+integer_features = ["unit-commitment"]
+time_steps = 36
+system_nodes = 6468 # 6475? 
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "UnitCommitment_matpower_case6470rte_2017-01-01-2ce330f691fc366dfd44e457ea81dc89979d16f071125a19315e811b3d730e71.mps.gz"
+source_model = "UnitCommitment"
+case_name = "matpower_case6470rte_2017-01-01"
+hash = "2ce330f691fc366dfd44e457ea81dc89979d16f071125a19315e811b3d730e71"
+integer_features = ["unit-commitment"]
+time_steps = 36
+system_nodes = 6470 # 6474?
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "UnitCommitment_pglib-uc_ca_2014-09-01_reserves_0-eac6f5414997007b8a1c2f8b227b6ea9412b42bfd4d8a8ae9c6d0a9a71128af4.mps.gz"
+source_model = "UnitCommitment"
+case_name = "pglib-uc_ca_2014-09-01_reserves_0"
+hash = "eac6f5414997007b8a1c2f8b227b6ea9412b42bfd4d8a8ae9c6d0a9a71128af4"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 1
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "UnitCommitment_pglib-uc_ferc_2015-01-01_hw-e7e61ac78d6cdf997a80bb9c82b09dbc15889fcb54355ea1d9e0a0dc6181c2f3.mps.gz"
+source_model = "UnitCommitment"
+case_name = "pglib-uc_ferc_2015-01-01_hw"
+hash = "e7e61ac78d6cdf997a80bb9c82b09dbc15889fcb54355ea1d9e0a0dc6181c2f3"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 1
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "UnitCommitment_pglib-uc_ferc_2015-01-01_lw-8c28a63295139f46aa10bde9fbf54a2983642c3e22100b8169031b5a478a5da7.mps.gz"
+source_model = "UnitCommitment"
+case_name = "pglib-uc_ferc_2015-01-01_lw"
+hash = "8c28a63295139f46aa10bde9fbf54a2983642c3e22100b8169031b5a478a5da7"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 1
+problem_type = "unit-commitment"
+
+[[instance]]
+name = "UnitCommitment_pglib-uc_rts_gmlc_2020-01-27-abe312033c437cad7782f34cbf4c63b42ba056f686df5e468d10298fc9d8f3c0.mps.gz"
+source_model = "UnitCommitment"
+case_name = "pglib-uc_rts_gmlc_2020-01-27"
+hash = "abe312033c437cad7782f34cbf4c63b42ba056f686df5e468d10298fc9d8f3c0"
+integer_features = ["unit-commitment"]
+time_steps = 48
+system_nodes = 1
+problem_type = "unit-commitment"

@@ -186,22 +186,13 @@ hash = "fc330569fd9116b60a77ce31693e7b88ae4137cb463d769b9e21adf49c1eb6f1"
 integer_features = ["unit-commitment"]
 time_steps = 24
 system_nodes = 73
+problem_type = "unit-commitment"
 
 [[instance]]
 name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day314-a9522cdcf8178254104ce7ca6f4fff4e2554e5844cb8b92a338635cdf211ef2a.mps.gz"
 source_model = "Sienna"
 case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day314"
 hash = "a9522cdcf8178254104ce7ca6f4fff4e2554e5844cb8b92a338635cdf211ef2a"
-integer_features = ["unit-commitment"]
-time_steps = 24
-system_nodes = 73
-problem_type = "unit-commitment"
-
-[[instance]]
-name = "Sienna_modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day332-35f61df3d7e00db245b09ef67b21ea954c6bbff05511cb1702cd419bd7fd2711.mps.gz"
-source_model = "Sienna"
-case_name = "modified_RTS_GMLC_DA_sys_NetCopperPlate_Horizon24_Day332"
-hash = "35f61df3d7e00db245b09ef67b21ea954c6bbff05511cb1702cd419bd7fd2711"
 integer_features = ["unit-commitment"]
 time_steps = 24
 system_nodes = 73
@@ -526,16 +517,6 @@ integer_features = ["other"] # review: reactor?
 time_steps = 24
 system_nodes = 1 # one "power" node
 problem_type = "unit-commitment"
-
-[[instance]]
-name = "TulipaEnergyModel_1_EU_investment_simple_24h-dc195d31e02ab753b5f047a4e754d2d387b59e15ac813c515b7fab21651779ea.mps.gz"
-source_model = "TulipaEnergyModel"
-case_name = "1_EU_investment_simple_24h"
-hash = "dc195d31e02ab753b5f047a4e754d2d387b59e15ac813c515b7fab21651779ea"
-integer_features = ["unit-commitment"]
-time_steps = 24
-system_nodes = 1
-problem_type = "expansion-planning"
 
 [[instance]]
 name = "TulipaEnergyModel_1_EU_investment_simple_24h-dc195d31e02ab753b5f047a4e754d2d387b59e15ac813c515b7fab21651779ea.mps.gz"

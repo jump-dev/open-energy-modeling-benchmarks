@@ -1,0 +1,27 @@
+name: CI-Metadata
+on:
+  push:
+    branches:
+      - master
+      - release-*
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  test:
+    name: Metadata - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - uses: julia-actions/cache@v1
+      - uses: julia-actions/julia-buildpkg@v1
+      - name: Validate
+        run: |
+          julia utils/metadata_validate.jl

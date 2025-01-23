@@ -513,9 +513,9 @@ name = "SpineOpt_1_electrolyzer_with_rolling_horizon.json-70fb7507bb16b4ea8e589a
 source_model = "SpineOpt"
 case_name = "1_electrolyzer_with_rolling_horizon.json"
 hash = "70fb7507bb16b4ea8e589a0890dc8bee3b8d3ca8acebede5e8592e693b22a646"
-integer_features = ["other"] # review: reactor?
+integer_features = ["unit-commitment"]
 time_steps = 24
-system_nodes = 1 # one "power" node
+system_nodes = 14
 problem_type = "unit-commitment"
 
 [[instance]]

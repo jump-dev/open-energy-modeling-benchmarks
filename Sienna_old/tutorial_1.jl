@@ -10,6 +10,7 @@ if isinteractive()
     ARGS = ["--case=CopperPlate-48-160", "--run"]#, "--profile"]
 end
 # error(1234)
+using PProf
 
 # necessary sienna stack
 import PowerSystems
@@ -36,7 +37,7 @@ include("../utils/highs_write.jl")
 
 # Non-default profile settings
 # because Sienna hangs with default settings
-Profile.init(; n = 10^6, delay = 0.1)
+Profile.init(; n = 10^7, delay = 0.001)
 
 #=
     Command line argument parsing
@@ -237,6 +238,7 @@ function main(args)
                 )
             else
                 @time build_and_solve(problem)
+                @time build_and_solve(problem)
             end
         end
     end
@@ -245,3 +247,5 @@ function main(args)
 end
 
 main(ARGS)
+
+pprof(; webport = 20001)

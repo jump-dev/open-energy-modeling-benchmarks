@@ -7,7 +7,7 @@ if isinteractive()
     cd(@__DIR__)
     import Pkg
     Pkg.activate(".")
-    ARGS = ["--case=CopperPlate-48-160", "--run"]#, "--profile"]
+    ARGS = ["--case=PTDF-48-160", "--run"]#, "--profile"]
 end
 # error(1234)
 
@@ -27,6 +27,7 @@ import Logging
 import Profile
 import FlameGraphs
 import JSON
+using PProf
 
 # helper functions
 include("../utils/utils.jl")
@@ -36,7 +37,7 @@ include("../utils/highs_write.jl")
 
 # Non-default profile settings
 # because Sienna hangs with default settings
-Profile.init(; n = 10^6, delay = 0.1)
+Profile.init(; n = 10^7, delay = 0.001)
 
 #=
     Command line argument parsing
@@ -87,7 +88,7 @@ function build_and_solve(problem)
         console_level = Logging.Info,
     )
     # write the file
-    HIGHS_WRITE_FILE_PREFIX[] = file_name
+    # HIGHS_WRITE_FILE_PREFIX[] = file_name
     PowerSimulations.solve!(problem; console_level = Logging.Info)
     return
 end
@@ -237,6 +238,7 @@ function main(args)
                 )
             else
                 @time build_and_solve(problem)
+                @time build_and_solve(problem)
             end
         end
     end
@@ -245,3 +247,5 @@ function main(args)
 end
 
 main(ARGS)
+
+pprof(; webport = 10003)

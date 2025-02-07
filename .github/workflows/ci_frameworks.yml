@@ -44,6 +44,9 @@ jobs:
             os: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4 # for spine only
+        with:
+          python-version: '3.11' 
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1.10'
@@ -56,6 +59,14 @@ jobs:
           import Pkg
           Pkg.activate(".")
           Pkg.instantiate()
+      - name: SpinePython
+        shell: bash
+        env:
+          PYTHON: python
+        run: |
+          if [[ "${{ matrix.framework }}" != "SpineOpt" ]]; then
+            julia ./.install_spinedb_api.jl
+          fi
       - name: Test
         run: |
           julia --project=${{ matrix.framework }} ${{ matrix.framework }}/${{ matrix.file }} --help

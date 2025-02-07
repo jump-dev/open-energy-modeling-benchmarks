@@ -64,7 +64,7 @@ jobs:
         env:
           PYTHON: python
         run: |
-          if [[ "${{ matrix.framework }}" != "SpineOpt" ]]; then
+          if [[ "${{ matrix.framework }}" == "SpineOpt" ]]; then
             julia ./.install_spinedb_api.jl
           fi
       - name: Test

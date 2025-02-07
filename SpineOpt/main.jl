@@ -136,6 +136,7 @@ function main(args)
                         log_level = 3,
                         optimize = true,
                     ) [JuMP, HiGHS, :Highs_run]
+                    @show data
                     save_proflist(
                         data;
                         output_filename = joinpath(

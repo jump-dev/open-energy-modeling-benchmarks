@@ -101,7 +101,7 @@ function main(args)
         )
         DuckDB.query(
             connection,
-            "UPDATE rep_periods_data SET num_timesteps = $timestep WHERE year = 2030 AND rep_period = 1",
+            "UPDATE rep_periods_data SET num_timesteps = $timestep WHERE rep_period = 1",
         )
         # To get access to the JuMP model, use `energy_problem.model`
         model_name = "TulipaEnergyModel_$(last(splitpath(case)))_$(timestep)h"

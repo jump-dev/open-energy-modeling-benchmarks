@@ -4,9 +4,9 @@ source_model = "GenX"
 case_name = "1_three_zones"
 hash = "2b66b543f23170441438f4d10acfb436136aef55ebcc483d502c5493a62d163c"
 integer_features = ["unit-commitment"]
-time_steps = 8760 # review: TimeDomainReduction: 1
+time_steps = 1848
 system_nodes = 3
-problem_type = "expansion-planning" # review
+problem_type = "expansion-planning"
 
 [[instance]]
 name = "GenX_2_three_zones_w_electrolyzer-f211ccdcc1a2145c1f4854dcc714f50d5b8fcc524bac465a2022ffb8942ffd53.mps.gz"
@@ -14,9 +14,9 @@ source_model = "GenX"
 case_name = "2_three_zones_w_electrolyzer"
 hash = "f211ccdcc1a2145c1f4854dcc714f50d5b8fcc524bac465a2022ffb8942ffd53"
 integer_features = ["unit-commitment"]
-time_steps = 8760 # review: TimeDomainReduction: 1
+time_steps = 1848
 system_nodes = 3
-problem_type = "expansion-planning" # review
+problem_type = "expansion-planning"
 
 [[instance]]
 name = "GenX_3_three_zones_w_co2_capture-3222908514bd19ae55895811eb847ad882270e280657123420407a885ccb34bc.mps.gz"
@@ -24,9 +24,9 @@ source_model = "GenX"
 case_name = "3_three_zones_w_co2_capture"
 hash = "3222908514bd19ae55895811eb847ad882270e280657123420407a885ccb34bc"
 integer_features = ["unit-commitment"]
-time_steps = 8760 # review: TimeDomainReduction: 1
+time_steps = 1848
 system_nodes = 3
-problem_type = "expansion-planning" # review
+problem_type = "expansion-planning"
 
 [[instance]]
 name = "GenX_4_three_zones_w_policies_slack-0be00acbe74d795dfc6aec53239998a93ac0310563b3e65fca00f2acebe2b6c1.mps.gz"
@@ -34,9 +34,9 @@ source_model = "GenX"
 case_name = "4_three_zones_w_policies_slack"
 hash = "0be00acbe74d795dfc6aec53239998a93ac0310563b3e65fca00f2acebe2b6c1"
 integer_features = ["unit-commitment"]
-time_steps = 8760 # review: TimeDomainReduction: 1
+time_steps = 1848
 system_nodes = 3
-problem_type = "expansion-planning" # review
+problem_type = "expansion-planning"
 
 [[instance]]
 name = "GenX_5_three_zones_w_piecewise_fuel-51ff0e52d559b549f9e45a13eb267156a2416566f126d1567e1846353a4e9936.mps.gz"
@@ -44,9 +44,9 @@ source_model = "GenX"
 case_name = "5_three_zones_w_piecewise_fuel"
 hash = "51ff0e52d559b549f9e45a13eb267156a2416566f126d1567e1846353a4e9936"
 integer_features = ["unit-commitment"]
-time_steps = 8760 # review: TimeDomainReduction: 1
+time_steps = 1848
 system_nodes = 3
-problem_type = "expansion-planning" # review
+problem_type = "expansion-planning"
 
 [[instance]]
 name = "GenX_6_three_zones_w_multistage-62d4538e93e8e775de4f754baf121d4996da332da11066a1a496e298f2319641.mps.gz"
@@ -54,9 +54,9 @@ source_model = "GenX"
 case_name = "6_three_zones_w_multistage"
 hash = "62d4538e93e8e775de4f754baf121d4996da332da11066a1a496e298f2319641"
 integer_features = ["unit-commitment"]
-time_steps = 8760 # review: TimeDomainReduction: 1
+time_steps = 1848
 system_nodes = 3
-problem_type = "expansion-planning" # review
+problem_type = "expansion-planning"
 
 [[instance]]
 name = "GenX_7_three_zones_w_colocated_VRE_storage-053eaf1f441d6cb6da75f0dfdaab95f8011afb3be0a34e3b0ae02dbd1043ee74.mps.gz"
@@ -64,9 +64,9 @@ source_model = "GenX"
 case_name = "7_three_zones_w_colocated_VRE_storage"
 hash = "053eaf1f441d6cb6da75f0dfdaab95f8011afb3be0a34e3b0ae02dbd1043ee74"
 integer_features = ["unit-commitment"]
-time_steps = 8760 # review: TimeDomainReduction: 1
+time_steps = 24
 system_nodes = 3
-problem_type = "expansion-planning" # review
+problem_type = "expansion-planning"
 
 [[instance]]
 name = "GenX_8_three_zones_w_colocated_VRE_storage_electrolyzers-5a9e9622b0df9ff8e06923ccddd72047e156022ae36bd98981ac89bfb0f83790.mps.gz"
@@ -74,9 +74,9 @@ source_model = "GenX"
 case_name = "8_three_zones_w_colocated_VRE_storage_electrolyzers"
 hash = "5a9e9622b0df9ff8e06923ccddd72047e156022ae36bd98981ac89bfb0f83790"
 integer_features = ["unit-commitment"]
-time_steps = 8760 # review: TimeDomainReduction: 1
+time_steps = 1680
 system_nodes = 3
-problem_type = "expansion-planning" # review
+problem_type = "expansion-planning"
 
 [[instance]]
 name = "GenX_9_three_zones_w_retrofit-8a89ca27ab8836ba9d561011fa6f8daa1481d8ff6509e371ce48f1357a3fdf47.mps.gz"
@@ -84,9 +84,9 @@ source_model = "GenX"
 case_name = "9_three_zones_w_retrofit"
 hash = "8a89ca27ab8836ba9d561011fa6f8daa1481d8ff6509e371ce48f1357a3fdf47"
 integer_features = ["unit-commitment"]
-time_steps = 8760 # review: TimeDomainReduction: 1
+time_steps = 1848
 system_nodes = 3
-problem_type = "expansion-planning" # review
+problem_type = "expansion-planning"
 
 [[instance]]
 name = "GenX_10_IEEE_9_bus_DC_OPF-79dee0225f3120ff0403a4b59238ede01562914e4dbf068d832e5d960e3afc40.mps.gz"
@@ -94,9 +94,19 @@ source_model = "GenX"
 case_name = "10_IEEE_9_bus_DC_OPF"
 hash = "79dee0225f3120ff0403a4b59238ede01562914e4dbf068d832e5d960e3afc40"
 integer_features = ["unit-commitment"]
-time_steps = 8760 # review: TimeDomainReduction: 1
+time_steps = 8760
 system_nodes = 9
-problem_type = "expansion-planning" # review
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "GenX_small_2_zone_7_generators-a8a9dbe14fc309301ad792023f8f9840d9471f6fddafa42f7f94e2ad7aa4b5f2.mps.gz"
+source_model = "GenX"
+case_name = "GenX_small_2_zone_7_generators"
+hash = "a8a9dbe14fc309301ad792023f8f9840d9471f6fddafa42f7f94e2ad7aa4b5f2"
+integer_features = ["unit-commitment"]
+time_steps = 1848
+system_nodes = 2
+problem_type = "expansion-planning"
 
 [[instance]]
 name = "PowerModelsOTS_pglib_opf_case162_ieee_dtc.m-e44d1cc9578fe03e1568c393ab3924265857b7a2383e6384df4df1a820185c73.mps.gz"

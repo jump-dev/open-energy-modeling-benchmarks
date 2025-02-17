@@ -579,6 +579,66 @@ system_nodes = 30
 problem_type = "expansion-planning"
 
 [[instance]]
+name = "TulipaEnergyModel_2_EU_SectorCoupling_P2x_24h-f9a0ca689a6583d6a9edb57a3182515f33c11de36fecdd800d3cafce27103733.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "2_EU_SectorCoupling_P2x_24h"
+hash = "f9a0ca689a6583d6a9edb57a3182515f33c11de36fecdd800d3cafce27103733"
+integer_features = ["investment"]
+time_steps = 24
+system_nodes = 31
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_2_EU_SectorCoupling_P2x_168h-cf875830a6c46d2c422d83d4b579689307eea8538a8d2b86cf45b4bf06cd01a8.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "2_EU_SectorCoupling_P2x_168h"
+hash = "cf875830a6c46d2c422d83d4b579689307eea8538a8d2b86cf45b4bf06cd01a8"
+integer_features = ["investment"]
+time_steps = 168
+system_nodes = 31
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_2_EU_SectorCoupling_P2x_672h-e956fb79491b4e880a268415f434310f4f68b8352f9c5e7ac07dccbbb6cd6e09.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "2_EU_SectorCoupling_P2x_672h"
+hash = "e956fb79491b4e880a268415f434310f4f68b8352f9c5e7ac07dccbbb6cd6e09"
+integer_features = ["investment"]
+time_steps = 672
+system_nodes = 31
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_2_EU_SectorCoupling_P2x_2016h-c909b2836df7cc027a8fa7db44c122b4475afb1b10a15ed161fb15610ec8bdcc.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "2_EU_SectorCoupling_P2x_2016h"
+hash = "c909b2836df7cc027a8fa7db44c122b4475afb1b10a15ed161fb15610ec8bdcc"
+integer_features = ["investment"]
+time_steps = 2016
+system_nodes = 31
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_2_EU_SectorCoupling_P2x_4032h-5fd59910568950959a3bf0709c99efd55645bd3cbbe77ed151edbcc633d3e906.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "2_EU_SectorCoupling_P2x_4032h"
+hash = "5fd59910568950959a3bf0709c99efd55645bd3cbbe77ed151edbcc633d3e906"
+integer_features = ["investment"]
+time_steps = 4032
+system_nodes = 31
+problem_type = "expansion-planning"
+
+[[instance]]
+name = "TulipaEnergyModel_2_EU_SectorCoupling_P2x_8760h-25c290039248f97e0cf1e187e1c1c4e786cc5581f4091255d9bd30aba2906fe5.mps.gz"
+source_model = "TulipaEnergyModel"
+case_name = "2_EU_SectorCoupling_P2x_8760h"
+hash = "25c290039248f97e0cf1e187e1c1c4e786cc5581f4091255d9bd30aba2906fe5"
+integer_features = ["investment"]
+time_steps = 8760
+system_nodes = 31
+problem_type = "expansion-planning"
+
+[[instance]]
 name = "UnitCommitment_matpower_case1888rte_2017-01-01-7226641602042c80f68031bfc3bfb0e943b6f46f13a5b573a3645cd023da3b6a.mps.gz"
 source_model = "UnitCommitment"
 case_name = "matpower_case1888rte_2017-01-01"

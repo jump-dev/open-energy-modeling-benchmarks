@@ -22,7 +22,8 @@ function analyze()
     for (i, instance) in enumerate(instances)
         Printf.@printf("Analyzing %d/%d: %s\n", i, n, instance)
         @time model = read_from_file(instance)
-        @time data = MathOptAnalyzer.analyze(MathOptAnalyzer.Numerical.Analyzer(), model)
+        @time data =
+            MathOptAnalyzer.analyze(MathOptAnalyzer.Numerical.Analyzer(), model)
         list = MathOptAnalyzer.list_of_issue_types(data)
         dict = Dict{String,Int}()
         for issue_type in list
@@ -36,8 +37,7 @@ function analyze()
 end
 
 function write_to_csv(out)
-
-    lines = collect(keys(out))
+    lines = sort(collect(keys(out)))
     cols = String[]
 
     for (name, dict) in out

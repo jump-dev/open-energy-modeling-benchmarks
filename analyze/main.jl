@@ -1,7 +1,17 @@
-using JuMP, MathOptAnalyzer, Printf
+# Copyright (c) 2024: Oscar Dowson, Joaquim Garcia and contributors
+#
+# Use of this source code is governed by an MIT-style license that can be found
+# in the LICENSE.md file or at https://opensource.org/licenses/MIT.
+
+cd(@__DIR__)
+
+using JuMP
+import MathOptAnalyzer
+import Printf
+import DelimitedFiles
 
 function analyze()
-    @show instances_path = joinpath(@__DIR__, "..", "instances")
+    instances_path = joinpath(@__DIR__, "..", "instances")
 
     instances = String[]
     _is_mps(c) = endswith(c, ".mps.gz")
@@ -10,9 +20,9 @@ function analyze()
     all = Dict{String,Dict{String,Int}}()
     n = length(instances)
     for (i, instance) in enumerate(instances)
-        @printf("Analyzing %d/%d: %s\n", i, n, instance)
-        model = read_from_file(instance)
-        data = MathOptAnalyzer.analyze(MathOptAnalyzer.Numerical.Analyzer(), model)
+        Printf.@printf("Analyzing %d/%d: %s\n", i, n, instance)
+        @time model = read_from_file(instance)
+        @time data = MathOptAnalyzer.analyze(MathOptAnalyzer.Numerical.Analyzer(), model)
         list = MathOptAnalyzer.list_of_issue_types(data)
         dict = Dict{String,Int}()
         for issue_type in list
@@ -22,8 +32,51 @@ function analyze()
         all[instance] = dict
     end
 
-    @show all
     return all
 end
 
-analyze()
+function write_to_csv(out)
+
+    lines = collect(keys(out))
+    cols = String[]
+
+    for (name, dict) in out
+        for k in keys(dict)
+            if !(k in cols)
+                push!(cols, k)
+            end
+        end
+    end
+
+    mat = Matrix{String}(undef, length(lines), length(cols))
+    for (i, line) in enumerate(lines)
+        for (j, col) in enumerate(cols)
+            mat[i, j] = string(get(out[line], col, ""))
+        end
+    end
+
+    beg = "MathOptAnalyzer.Numerical."
+    for i in eachindex(cols)
+        if startswith(cols[i], beg)
+            cols[i] = cols[i][length(beg)+1:end]  # remove prefix
+        end
+    end
+    cols
+
+    pushfirst!(cols, "instance")
+
+    for i in eachindex(lines)
+        lines[i] = join(split(splitpath(lines[i])[end], '-')[1:end-1], "-")
+    end
+
+    mat = hcat(lines, mat)
+    mat = vcat(reshape(cols, 1, length(cols)), mat)
+
+    DelimitedFiles.writedlm("summary.csv", mat, ',')
+
+    return
+end
+
+@time out = analyze()
+
+write_to_csv(out)

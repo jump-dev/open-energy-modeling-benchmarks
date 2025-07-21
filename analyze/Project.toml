@@ -1,0 +1,5 @@
+[deps]
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
+MathOptAnalyzer = "d1179b25-476b-425c-b826-c7787f0fff83"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"

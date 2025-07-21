@@ -17,7 +17,7 @@ function analyze()
     _is_mps(c) = endswith(c, ".mps.gz")
     append!(instances, filter(_is_mps, readdir(instances_path; join = true)))
 
-    all = Dict{String,Dict{String,Int}}()
+    all = Dict{String,Dict{String,Any}}()
     n = length(instances)
     for (i, instance) in enumerate(instances)
         Printf.@printf("Analyzing %d/%d: %s\n", i, n, instance)
@@ -25,10 +25,19 @@ function analyze()
         @time data =
             MathOptAnalyzer.analyze(MathOptAnalyzer.Numerical.Analyzer(), model)
         list = MathOptAnalyzer.list_of_issue_types(data)
-        dict = Dict{String,Int}()
+        dict = Dict{String,Any}()
         for issue_type in list
             issues = MathOptAnalyzer.list_of_issues(data, issue_type)
             dict[string(issue_type)] = length(issues)
+            if length(issues) >= 1
+                val = ""
+                try
+                    val = string(MathOptAnalyzer.value(issues[1]))
+                    dict[string(issue_type)*"_value"] = val
+                catch e
+                    # do nothing if value cannot be retrieved
+                end
+            end
         end
         all[instance] = dict
     end
@@ -47,6 +56,7 @@ function write_to_csv(out)
             end
         end
     end
+    sort!(cols)
 
     mat = Matrix{String}(undef, length(lines), length(cols))
     for (i, line) in enumerate(lines)
@@ -61,7 +71,6 @@ function write_to_csv(out)
             cols[i] = cols[i][length(beg)+1:end]  # remove prefix
         end
     end
-    cols
 
     pushfirst!(cols, "instance")
 
